@@ -1,12 +1,13 @@
-<<<<<<< HEAD
 # Capstone 2022
+
 # Project: Music Transcriber
+
 # Team: RUNTIME TERROR
-# Members
- 
-# Samuel Evans
-=======
+
+## Members
+- Samuel Evans
+- David Jara
+
 # Capstone
 # hello
 # test commit
->>>>>>> 7e09995315884152cc6606c068351bc300db9aaf
