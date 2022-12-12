@@ -8,6 +8,7 @@
 - Samuel Evans
 - David Jara
 - Aaron Earp
+- Thomas Nguyen
 
 # Capstone
 # hello
