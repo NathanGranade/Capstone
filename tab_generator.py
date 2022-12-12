@@ -59,30 +59,35 @@ class FretboardPosition:
         self.string = string
         self.fret = fret
 
-   
+# This is all the ways you can play any given note on a guitar's fretboard, under the presumption that you have a 6 string guitar with 24 frets.
 TAB_MAP = {
-        # 6th string
-        # Normally, I prefer to play laterally, rather than jumping down to the next string.
-        # Need to come to a conclusion on the best way to translate notes onto fretboard
-        Note("E", 0) : FretboardPosition(6, 0),
-        Note("E#", 0) : FretboardPosition(6, 1),
-        Note("E", 0) : FretboardPosition(6, 2),
-        Note("G", 0) : FretboardPosition(6, 3),
-        Note("Ab", 0) : FretboardPosition(6, 4),
-        Note("A", 0) : FretboardPosition(6, 5),
-        Note("A#", 0) : FretboardPosition(6, 6),
-        Note("B", 0) : FretboardPosition(6, 7),
-        Note("C", 0) : FretboardPosition(6, 8),
-        Note("C#", 0) : FretboardPosition(6, 9),
-        Note("D", 0) : FretboardPosition(6, 10),
+        Note("E", 0) : [FretboardPosition(6, 0)], 
+        Note("F", 0) : [FretboardPosition(6, 1)],
+        Note("F#", 0) : [FretboardPosition(6, 2)],
+        Note("G", 0) : [FretboardPosition(6, 3)],
+        Note("Ab", 0) : [FretboardPosition(6, 4)],
+        Note("A", 0) : [FretboardPosition(6, 5), FretboardPosition(5, 0)],
+        Note("A#", 0) : [FretboardPosition(6, 6), FretboardPosition(5, 1)],
+        Note("B", 0) : [FretboardPosition(6, 7), FretboardPosition(5, 2)],
+        Note("C", 0) : [FretboardPosition(6, 8)], FretboardPosition(5, 3)],
+        Note("C#", 0) : [FretboardPosition(6, 9), FretboardPosition(5, 4)],
+        Note("D", 0) : [FretboardPosition(6, 10), FretboardPosition(5, 5), FretboardPosition(4, 0)],
+        Note("Eb", 0) : [FretboardPosition(6, 11), FretboardPosition(5, 6), FretboardPosition(4, 1)],
         
-        # 5th string
-        Note("D", 0) : FretboardPosition("A", 5),
-        Note("G", 0) : FretboardPosition("D", 7),
-        Note("B", 0) : FretboardPosition("G", 4),
-        Note("E", 1) : FretboardPosition("B", 5),
-
-        # STILL ADDING MORE TO THIS
+        # One octave up
+        Note("E", 1) : [FretboardPosition(6, 12), FretboardPosition(5, 7), FretboardPosition(4, 2)],
+        Note("F#", 1) : [FretboardPosition(6, 13), FretboardPosition(5, 8), FretboardPosition(4, 3)],
+        Note("F", 1) : [FretboardPosition(6, 14), FretboardPosition(5, 9), FretboardPosition(4, 4)],
+        Note("G", 1) : [FretboardPosition(6, 15), FretboardPosition(5, 10), FretboardPosition(4, 5), FretboardPosition(5, 0)],
+        Note("Ab", 1) : [],
+        Note("A", 1) : [],
+        Note("A#", 1): [],
+        Note("B", 1) : [],
+        Note("C", 1) : [],
+        Note("C#", 1) : [],
+        Note("D", 1) : [],
+        Note("Eb", 1) : [],
+        Note("E", 2) : [],
         }
 
  def lateral_fretboard_distance(note1, note2):
@@ -91,7 +96,22 @@ TAB_MAP = {
         highest_fret = max(TAB_MAP[note1].fret, TAB_MAP[note2].fret)
         lowest_fret = min(TAB_MAP[note1].fret, TAB_MAP[note2].fret)
         return highest_fret - lowest_fret
-    
+
+def note_to_fret(note, previous = None):
+    # previous argument is if you want the placement of the note to be contextual. For example, if the previous note is the 3rd fret on the E string, then the next note should not be the 11th fret on the E string, as this will be hard to reach. It should instead then be the 6th fret on the A string
+    if previous == None:
+        if note in TAB_MAP:
+            return TAB_MAP[note]
+        else:
+            print("Error: note is not in tablature map (you need to update it)")
+    else:
+        if note in TAB_MAP and previous in TAB_MAP:
+           # later add code to ensure that the  
+        else:
+            print("Erorr: the note is not in the tablature map (you need to update it)")
+
+
+
 def determine_tuning(notes: list):
     """
     Determines the tuning the guitar should be in, based on the lowest played note.
