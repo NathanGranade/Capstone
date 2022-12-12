@@ -7,6 +7,9 @@
 ## Members
 - Samuel Evans
 - David Jara
+- Aaron Earp
+- Thomas Nguyen
+- Nathan Granade
 
 # Capstone
 # hello
