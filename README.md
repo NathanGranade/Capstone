@@ -11,6 +11,3 @@
 - Thomas Nguyen
 - Nathan Granade
 
-# Capstone
-# hello
-# test commit
