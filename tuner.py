@@ -5,6 +5,8 @@ import os
 from contextlib import suppress
 import copy
 import time
+import math
+from colored import fg
 
 
 """
@@ -31,6 +33,8 @@ STANDARD_PITCH = 440
 
 NOTES = ["A","A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 HANN_WINDOW = np.hanning(WINDOW_SIZE)
+DEFAULT_COLOR = fg('white')
+INTUNE_COLOR = fg('green')
 
 
 #chooseClosestNote function picks the closest note to the frequency reading  -- takes a pitch as an  input and outputs closest_note , closest_pitch
@@ -105,9 +109,13 @@ def displayTuner(indata, frames, time, status):
 
         os.system('cls' if os.name=='nt' else 'clear')
         if displayTuner.noteBuffer.count(displayTuner.noteBuffer[0]) == len(displayTuner.noteBuffer):
-            print(f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
+            if (math.isclose(maxFreq, closest_pitch, abs_tol = .5)):
+                print(INTUNE_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
+                pass
+            else:
+                print(DEFAULT_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
         else:
-            print(f"Closest note: ...")
+            print(DEFAULT_COLOR + f"Closest note: ...")
 
     else:
         print('no input')     
