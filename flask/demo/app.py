@@ -3,15 +3,16 @@ from views import views
 from flask import Flask,render_template, request
 from flask_mysqldb import MySQL
 import random
+import MySQLdb
 
 app = Flask(__name__)
 app.register_blueprint(views, url_prefix="/")
     
-app.config['MYSQL_HOST'] = '100.86.12.252'
-app.config['MYSQL_USER'] = 'usera'
-app.config['MYSQL_PASSWORD'] = 'passa'
-app.config['MYSQL_DB'] = 'clab'
- 
+app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
+app.config['MYSQL_USER'] = "sql9591604"
+app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
+app.config['MYSQL_DB'] = "sql9591604"
+
 mysql = MySQL(app)
 
 @app.route('/form')
@@ -29,7 +30,7 @@ def login():
         password = request.form['password']
         idUser = random.randrange(20)
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO users (email,username,password,idUsers) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
+        cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
         mysql.connection.commit()
         cursor.close()
         return f"Done!!"
