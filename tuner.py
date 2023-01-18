@@ -5,6 +5,8 @@ import os
 from contextlib import suppress
 import copy
 import time
+import math
+from colored import fg
 
 
 """
@@ -18,7 +20,7 @@ WINDOW_SIZE = 44100 # window size of the DFT in samples
 WINDOW_STEP = 21050 # step size of window
 WINDOW_T_LEN = WINDOW_SIZE / SAMPLE_FREQ # length of the window in seconds
 SAMPLE_T_LENGTH = 1 / SAMPLE_FREQ # length between two samples in seconds
-#windowSamples = [0 for _ in range(WINDOW_SIZE)]
+
 HPS = 5
 POWER_THRESH = 1e-5
 CONCERT_PITCH = 440
@@ -31,6 +33,8 @@ STANDARD_PITCH = 440
 
 NOTES = ["A","A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 HANN_WINDOW = np.hanning(WINDOW_SIZE)
+DEFAULT_COLOR = fg('white')
+INTUNE_COLOR = fg('green')
 
 
 #chooseClosestNote function picks the closest note to the frequency reading  -- takes a pitch as an  input and outputs closest_note , closest_pitch
@@ -63,7 +67,7 @@ def displayTuner(indata, frames, time, status):
         signal_power = (np.linalg.norm(displayTuner.windowSamples, ord=2)**2) / len(displayTuner.windowSamples)
         if signal_power < POWER_THRESH:
             os.system('cls' if os.name =='nt' else 'clear')
-            print(f"Closest Note ... ")
+            print(DEFAULT_COLOR + f"Closest note: ...")
             return 
         hann_samples = displayTuner.windowSamples * HANN_WINDOW
         magnitudeSpec = abs(scipy.fftpack.fft(hann_samples)[:len(hann_samples)//2])
@@ -105,9 +109,13 @@ def displayTuner(indata, frames, time, status):
 
         os.system('cls' if os.name=='nt' else 'clear')
         if displayTuner.noteBuffer.count(displayTuner.noteBuffer[0]) == len(displayTuner.noteBuffer):
-            print(f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
+            if (math.isclose(maxFreq, closest_pitch, abs_tol = .5)):
+                print(INTUNE_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
+                pass
+            else:
+                print(DEFAULT_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
         else:
-            print(f"Closest note: ...")
+            print(DEFAULT_COLOR + f"Closest note: ...")
 
     else:
         print('no input')     
