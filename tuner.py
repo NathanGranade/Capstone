@@ -20,7 +20,7 @@ WINDOW_SIZE = 44100 # window size of the DFT in samples
 WINDOW_STEP = 21050 # step size of window
 WINDOW_T_LEN = WINDOW_SIZE / SAMPLE_FREQ # length of the window in seconds
 SAMPLE_T_LENGTH = 1 / SAMPLE_FREQ # length between two samples in seconds
-#windowSamples = [0 for _ in range(WINDOW_SIZE)]
+
 HPS = 5
 POWER_THRESH = 1e-5
 CONCERT_PITCH = 440
@@ -67,7 +67,7 @@ def displayTuner(indata, frames, time, status):
         signal_power = (np.linalg.norm(displayTuner.windowSamples, ord=2)**2) / len(displayTuner.windowSamples)
         if signal_power < POWER_THRESH:
             os.system('cls' if os.name =='nt' else 'clear')
-            print(f"Closest Note ... ")
+            print(DEFAULT_COLOR + f"Closest note: ...")
             return 
         hann_samples = displayTuner.windowSamples * HANN_WINDOW
         magnitudeSpec = abs(scipy.fftpack.fft(hann_samples)[:len(hann_samples)//2])
