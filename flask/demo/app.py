@@ -28,7 +28,7 @@ def login():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        idUser = random.randrange(20)
+        idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
         mysql.connection.commit()
