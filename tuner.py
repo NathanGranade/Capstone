@@ -110,10 +110,11 @@ def displayTuner(indata, frames, time, status):
 
         os.system('cls' if os.name=='nt' else 'clear')
         if displayTuner.noteBuffer.count(displayTuner.noteBuffer[0]) == len(displayTuner.noteBuffer):
-            if (math.isclose(maxFreq, closest_pitch, abs_tol = .5)):
+            if (math.isclose(maxFreq, closest_pitch, abs_tol = 1)):
                 print(INTUNE_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
                 pass
             else:
+
                 print(DEFAULT_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
         else:
             print(DEFAULT_COLOR + f"Closest note: ...")
