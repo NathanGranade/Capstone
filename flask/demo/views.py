@@ -10,3 +10,8 @@ def home():
 def app():
     return render_template("app.html", name = "Thomas")
 
+@views.route("/register")
+def register():
+    return render_template("login.html")
+
+

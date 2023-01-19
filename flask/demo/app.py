@@ -18,6 +18,7 @@ mysql = MySQL(app)
 @app.route('/form')
 def form():
     return render_template('form.html')
+
  
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
