@@ -1,8 +1,10 @@
-import converter
+import transcriber
 import unittest
 
 
 class UnitTest(unittest.TestCase):
-    data = test.wav
+    data = "test.wav"
+    
+
     
 
