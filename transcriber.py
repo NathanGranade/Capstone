@@ -63,8 +63,17 @@ def number_to_freq(n): return 440 * 2.0**((n-69)/12.0)
 def note_name(n): return NOTE_NAMES[n % 12] + str(int(n/12 - 1))
 
 def transcribe(AUDIO_FILE):
-  
-  fs, data = wavfile.read(AUDIO_FILE) # load the data
+  allowed_extention = {"wav"}
+  if AUDIO_FILE == "" :
+    return []
+  if isinstance(AUDIO_FILE, str) == False:
+    return "Input is not String! Enter file name as string in .wav format"
+  if AUDIO_FILE[-4:] != '.wav':
+    return "Incorrect file type! This program accepts files of .wav format."
+  try:
+    fs, data = wavfile.read(AUDIO_FILE) # load the data
+  except OSError:
+    return "Error! Could not find File in dirctory"
   audio = data.T[0] # this is a two channel soundtrack, get the first track
   
   FRAME_STEP = (fs / FPS) # audio samples per video frame
@@ -91,11 +100,11 @@ def transcribe(AUDIO_FILE):
     mx = max(np.max(fft),mx)
 
   # Pass 2, produce the animation
-  for frame_number in tqdm.tqdm(range(FRAME_COUNT)):
-    sample = extract_sample(audio, frame_number, FRAME_OFFSET, FFT_WINDOW_SIZE)
+  #for frame_number in tqdm.tqdm(range(FRAME_COUNT)):
+   # sample = extract_sample(audio, frame_number, FRAME_OFFSET, FFT_WINDOW_SIZE)
 
-    fft = np.fft.rfft(sample * window)
-    fft = np.abs(fft) / mx
+    #fft = np.fft.rfft(sample * window)
+    #fft = np.abs(fft) / mx
        
     s = find_top_notes(fft, xf)
 
@@ -113,5 +122,5 @@ def transcribe(AUDIO_FILE):
 
 # prints the list of notes
 
-print(transcribe("test.wav"))
+print(transcribe("something.wav"))
   
