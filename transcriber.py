@@ -73,7 +73,10 @@ def transcribe(AUDIO_FILE):
   try:
     fs, data = wavfile.read(AUDIO_FILE) # load the data
   except OSError:
+
     return "Error! Could not find File in dirctory"
+
+  
   audio = data.T[0] # this is a two channel soundtrack, get the first track
   
   FRAME_STEP = (fs / FPS) # audio samples per video frame
@@ -122,5 +125,5 @@ def transcribe(AUDIO_FILE):
 
 # prints the list of notes
 
-print(transcribe("something.wav"))
+print(transcribe("test.wav"))
   
