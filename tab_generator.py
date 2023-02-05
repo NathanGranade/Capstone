@@ -60,6 +60,9 @@ class FretboardPosition:
         self.fret = fret
 
 # This is all the ways you can play any given note on a guitar's fretboard, under the presumption that you have a 6 string guitar with 24 frets.
+# To handle other tunings, just transpose (see transpose function) from Standard E tuning.
+# For example, D Standard is 1 whole step lower than E standard, so to transpose E → D, move DOWN each fretboard position by 2, except for where the fret is 0.
+#                                                                   to transpose D → E, moe UP each fretboard position by 2, except for where the fret is 24.
 TAB_MAP = {
         Note("E", 0) : [FretboardPosition(6, 0)], 
         Note("F", 0) : [FretboardPosition(6, 1)],
@@ -74,23 +77,54 @@ TAB_MAP = {
         Note("D", 0) : [FretboardPosition(6, 10), FretboardPosition(5, 5), FretboardPosition(4, 0)],
         Note("Eb", 0) : [FretboardPosition(6, 11), FretboardPosition(5, 6), FretboardPosition(4, 1)],
         
-        # One octave up
-        Note("E", 1) : [FretboardPosition(6, 12), FretboardPosition(5, 7), FretboardPosition(4, 2)],
-        Note("F#", 1) : [FretboardPosition(6, 13), FretboardPosition(5, 8), FretboardPosition(4, 3)],
-        Note("F", 1) : [FretboardPosition(6, 14), FretboardPosition(5, 9), FretboardPosition(4, 4)],
-        Note("G", 1) : [FretboardPosition(6, 15), FretboardPosition(5, 10), FretboardPosition(4, 5), FretboardPosition(5, 0)],
-        Note("Ab", 1) : [],
-        Note("A", 1) : [],
-        Note("A#", 1): [],
-        Note("B", 1) : [],
-        Note("C", 1) : [],
-        Note("C#", 1) : [],
-        Note("D", 1) : [],
-        Note("Eb", 1) : [],
-        Note("E", 2) : [],
+        # One octave up Low E String                A String                  D String                  G String                  B String                 High E String
+        Note("E", 1) :  [FretboardPosition(6, 12), FretboardPosition(5, 7),  FretboardPosition(4, 2)],
+        Note("F#", 1) : [FretboardPosition(6, 13), FretboardPosition(5, 8),  FretboardPosition(4, 3)],
+        Note("F", 1) :  [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
+        Note("G", 1) :  [FretboardPosition(6, 15), FretboardPosition(5, 10), FretboardPosition(4, 5),  FretboardPosition(3, 0)], 
+        Note("Ab", 1) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
+        Note("A", 1) :  [FretboardPosition(6, 17), FretboardPosition(5, 12), FretboardPosition(4, 7),  FretboardPosition(3, 2)],
+        Note("A#", 1):  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
+        Note("B", 1) :  [FretboardPosition(6, 19), FretboardPosition(5, 14), FretboardPosition(4, 9),  FretboardPosition(3, 4), FretboardPosition(2, 0)],
+        Note("C", 1) :  [FretboardPosition(6, 20), FretboardPosition(5, 15), FretboardPosition(4, 10), FretboardPosition(3, 5), FretboardPosition(2, 1)],
+        Note("C#", 1) : [FretboardPosition(6, 21), FretboardPosition(5, 16), FretboardPosition(4, 11), FretboardPosition(3, 6), FretboardPosition(2, 2)],
+        Note("D", 1) :  [FretboardPosition(6, 22), FretboardPosition(5, 17), FretboardPosition(4, 12), FretboardPosition(3, 7), FretboardPosition(2, 3)],
+        Note("Eb", 1) : [FretboardPosition(6, 23), FretboardPosition(5, 18), FretboardPosition(4, 13), FretboardPosition(3, 8), FretboardPosition(2, 4)],
+        
+        # Two octaves up
+        Note("E", 2) :  [FretboardPosition(6, 24), FretboardPosition(5, 19), FretboardPosition(4, 14), FretboardPosition(3, 9), FretboardPosition(2, 5), FretboardPosition(1, 0)],
+        Note("F", 2) :  [                          FretboardPosition(5, 20), FretboardPosition(4, 15), FretboardPosition(3, 10), FretboardPosition(2, 6), FretboardPosition(1, 1)],
+        Note("F#", 2) : [                          FretboardPosition(5, 21), FretboardPosition(4, 16), FretboardPosition(3, 11), FretboardPosition(2, 7), FretboardPosition(1, 2)],
+        Note("G", 2) :  [                          FretboardPosition(5, 22), FretboardPosition(4, 17), FretboardPosition(3, 12), FretboardPosition(2, 8), FretboardPosition(1, 3)],
+        Note("Ab", 2) : [                          FretboardPosition(5, 23), FretboardPosition(4, 18), FretboardPosition(3, 13), FretboardPosition(2, 9), FretboardPosition(1, 4)],
+        Note("A", 2) :  [                          FretboardPosition(5, 24), FretboardPosition(4, 19), FretboardPosition(3, 14), FretboardPosition(2, 10), FretboardPosition(1, 5)],
+        Note("A#", 2) : [                                                    FretboardPosition(4, 20), FretboardPosition(3, 15), FretboardPosition(2, 11), FretboardPosition(1, 6)],
+        Note("B", 2) :  [                                                    FretboardPosition(4, 21), FretboardPosition(3, 16), FretboardPosition(2, 12), FretboardPosition(1, 7)],
+        Note("C", 2) :  [                                                    FretboardPosition(4, 22), FretboardPosition(3, 17), FretboardPosition(2, 13), FretboardPosition(1, 8)],
+        Note("C#", 2) : [                                                    FretboardPosition(4, 23), FretboardPosition(3, 18), FretboardPosition(2, 14), FretboardPosition(1, 9)],
+        Note("D", 2) :  [                                                    FretboardPosition(4, 24), FretboardPosition(3, 19), FretboardPosition(2, 15), FretboardPosition(1, 10)],
+        Note("Eb", 2) : [                                                                              FretboardPosition(3, 20), FretboardPosition(2, 16), FretboardPosition(1, 11)],
+        
+        # Three octaves up
+        Note("E", 3) :  [                                                                              FretboardPosition(3, 21), FretboardPosition(2, 17), FretboardPosition(1, 12)],
+        Note("F", 3) :  [                                                                              FretboardPosition(3, 22), FretboardPosition(2, 18), FretboardPosition(1, 13)],
+        Note("F#", 3) :  [                                                                             FretboardPosition(3, 23), FretboardPosition(2, 19), FretboardPosition(1, 14)],
+        Note("G", 3) :  [                                                                              FretboardPosition(3, 24), FretboardPosition(2, 20), FretboardPosition(1, 15)],
+        Note("Ab", 3) :  [                                                                                                       FretboardPosition(2, 21), FretboardPosition(1, 16)],
+        Note("A", 3) :  [                                                                                                        FretboardPosition(2, 22), FretboardPosition(1, 17)],
+        Note("A#", 3) :  [                                                                                                       FretboardPosition(2, 23), FretboardPosition(1, 18)],
+        Note("B", 3) :  [                                                                                                        FretboardPosition(2, 24), FretboardPosition(1, 19)],
+        Note("C", 3) :  [                                                                                                                                  FretboardPosition(1, 20)],
+        Note("C#", 3) :  [                                                                                                                                  FretboardPosition(1, 21)],
+        Note("D", 3) :  [                                                                                                                                  FretboardPosition(1, 22)],
+        Note("Eb", 3) :  [                                                                                                                                  FretboardPosition(1, 23)],
+        
+        # Four Octaves up
+        Note("E", 4) :  [                                                                                                                                  FretboardPosition(1, 24)]
+        
         }
 
- def lateral_fretboard_distance(note1, note2):
+def lateral_fretboard_distance(note1, note2):
     """returns the lateral distance (how many frets away) this note is from another note on the fretboard. Used to determine whether or not the note should be on the same string, or a different string. E.g. it is extremely difficult to go from the 3rd fret to the 9th fret on the E string, so it would be better to play the 3rd fret on the E string, then the 4th fret on the A string."""
     if TAB_MAP[note1].string == TAB_MAP[note2].string:
         highest_fret = max(TAB_MAP[note1].fret, TAB_MAP[note2].fret)
@@ -134,4 +168,5 @@ def determine_tuning(notes: list):
             decision = tuning
     return tuning
 
-
+def transpose(note, level: int):
+    
