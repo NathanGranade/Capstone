@@ -1,7 +1,7 @@
 import transcriber
 import unittest
 import os
-#this unti test case will test if the file passed the transcriber.py is in the correct directory, a string, or empty and not a string
+#this unit test case will test if the file passed the transcriber.py is in the correct directory, a string, or empty and not a string
 
 class TestSum(unittest.TestCase):
     def test_pass(self):
