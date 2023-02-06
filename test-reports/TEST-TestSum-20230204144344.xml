@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<testsuite name="TestSum-20230204144344" tests="5" time="0.705" failures="0" errors="0">
+	<testcase classname="TestSum" name="test_empty" time="0.000"/>
+	<testcase classname="TestSum" name="test_fileNotFound" time="0.006"/>
+	<testcase classname="TestSum" name="test_isNotString" time="0.000"/>
+	<testcase classname="TestSum" name="test_notWav" time="0.000"/>
+	<testcase classname="TestSum" name="test_pass" time="0.700"/>
+	<system-out><![CDATA[]]></system-out>
+	<system-err><![CDATA[]]></system-err>
+</testsuite>

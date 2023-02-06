@@ -32,6 +32,8 @@ NOTES = ["A","A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 HANN_WINDOW = np.hanning(WINDOW_SIZE)
 DEFAULT_COLOR = fg('white')
 INTUNE_COLOR = fg('green')
+CLOSE_COLOR = fg('yellow') # colors corresponding to how close the note is to being in tune
+OFF_COLOR = fg('red')
 
 
 #chooseClosestNote function picks the closest note to the frequency reading  -- takes a pitch as an  input and outputs closest_note , closest_pitch
@@ -114,8 +116,13 @@ def displayTuner(indata, frames, time, status):
                 
                 print(INTUNE_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
                 pass
+            elif(math.isclose(maxFreq, closest_pitch, abs_tol = 2)): 
+                print(CLOSE_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
+                pass
+            elif(math.isclose(maxFreq, closest_pitch, abs_tol = 3)):
+                print(OFF_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
+                pass
             else:
-
                 print(DEFAULT_COLOR + f"Closest note: {closest_note} {maxFreq}/{closest_pitch}")
         else:
             print(DEFAULT_COLOR + f"Closest note: ...")
