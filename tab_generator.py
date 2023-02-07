@@ -43,6 +43,15 @@ class Note:
             else:
                 one_step_down_note = WHOLE_STEPS[len(WHOLE_STEPS)-1]
             new_note = Note(one_step_down_note, self.octave)
+    
+    def __str__(self):
+        return(f"({self.note}, {self.octave})")
+    
+    def __eq__(self, other):
+        if (self.note == other.note) and (self.octave == other.octave):
+            return True
+        else:
+            return False
 
 class Chord:
     def __init__(self, notes: list):
@@ -58,93 +67,104 @@ class FretboardPosition:
     def __init__(self, string: int, fret: int):
         self.string = string
         self.fret = fret
+    
+    def __str__(self):
+        return(f"(String {self.string}, fret {self.fret})")
+    
+    def __eq__(self, other):
+        if (self.string == other.string) and (self.fret == other.fret):
+            return True
+        else:
+            return False
 
 # This is all the ways you can play any given note on a guitar's fretboard, under the presumption that you have a 6 string guitar with 24 frets.
 # To handle other tunings, just transpose (see transpose function) from Standard E tuning.
 # For example, D Standard is 1 whole step lower than E standard, so to transpose E → D, move DOWN each fretboard position by 2, except for where the fret is 0.
 #                                                                   to transpose D → E, moe UP each fretboard position by 2, except for where the fret is 24.
 TAB_MAP = {
-        Note("E", 0) :  [FretboardPosition(6, 0)], 
-        Note("F", 0) :  [FretboardPosition(6, 1)],
-        Note("F#", 0) : [FretboardPosition(6, 2)],
-        Note("Gb", 0) : [FretboardPosition(6, 2)],
-        Note("G", 0) :  [FretboardPosition(6, 3)],
-        Note("G#", 0) : [FretboardPosition(6, 4)],
-        Note("Ab", 0) : [FretboardPosition(6, 4)],
-        Note("A", 0) :  [FretboardPosition(6, 5), FretboardPosition(5, 0)],
-        Note("A#", 0) : [FretboardPosition(6, 6), FretboardPosition(5, 1)],
-        Note("Bb", 0) : [FretboardPosition(6, 6), FretboardPosition(5, 1)],
-        Note("B", 0) :  [FretboardPosition(6, 7), FretboardPosition(5, 2)],
-        Note("C", 0) :  [FretboardPosition(6, 8), FretboardPosition(5, 3)],
-        Note("C#", 0) : [FretboardPosition(6, 9), FretboardPosition(5, 4)],
-        Note("Db", 0) : [FretboardPosition(6, 9), FretboardPosition(5, 4)],
-        Note("D", 0) :  [FretboardPosition(6, 10), FretboardPosition(5, 5), FretboardPosition(4, 0)],
-        Note("D#", 0) : [FretboardPosition(6, 11), FretboardPosition(5, 6), FretboardPosition(4, 1)],
-        Note("Eb", 0) : [FretboardPosition(6, 11), FretboardPosition(5, 6), FretboardPosition(4, 1)],
+        str(Note("E", 0)) :  [FretboardPosition(6, 0)], 
+        str(Note("F", 0)) :  [FretboardPosition(6, 1)],
+        str(Note("F#", 0)) : [FretboardPosition(6, 2)],
+        str(Note("Gb", 0)) : [FretboardPosition(6, 2)],
+        str(Note("G", 0)) :  [FretboardPosition(6, 3)],
+        str(Note("G#", 0)) : [FretboardPosition(6, 4)],
+        str(Note("Ab", 0)) : [FretboardPosition(6, 4)],
+        str(Note("A", 0)) :  [FretboardPosition(6, 5), FretboardPosition(5, 0)],
+        str(Note("A#", 0)) : [FretboardPosition(6, 6), FretboardPosition(5, 1)],
+        str(Note("Bb", 0)) : [FretboardPosition(6, 6), FretboardPosition(5, 1)],
+        str(Note("B", 0)) :  [FretboardPosition(6, 7), FretboardPosition(5, 2)],
+        str(Note("C", 0)) :  [FretboardPosition(6, 8), FretboardPosition(5, 3)],
+        str(Note("C#", 0)) : [FretboardPosition(6, 9), FretboardPosition(5, 4)],
+        str(Note("Db", 0)) : [FretboardPosition(6, 9), FretboardPosition(5, 4)],
+        str(Note("D", 0)) :  [FretboardPosition(6, 10), FretboardPosition(5, 5), FretboardPosition(4, 0)],
+        str(Note("D#", 0)) : [FretboardPosition(6, 11), FretboardPosition(5, 6), FretboardPosition(4, 1)],
+        str(Note("Eb", 0)) : [FretboardPosition(6, 11), FretboardPosition(5, 6), FretboardPosition(4, 1)],
         
         
         # One octave up Low E String                A String                  D String                  G String                  B String                 High E String
-        Note("E", 1) :  [FretboardPosition(6, 12), FretboardPosition(5, 7),  FretboardPosition(4, 2)],
-        Note("F", 1) :  [FretboardPosition(6, 13), FretboardPosition(5, 8),  FretboardPosition(4, 3)],
-        Note("F#", 1) : [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
-        Note("Gb", 1) : [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
-        Note("G", 1) :  [FretboardPosition(6, 15), FretboardPosition(5, 10), FretboardPosition(4, 5),  FretboardPosition(3, 0)], 
-        Note("G#", 1) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
-        Note("Ab", 1) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
-        Note("A", 1) :  [FretboardPosition(6, 17), FretboardPosition(5, 12), FretboardPosition(4, 7),  FretboardPosition(3, 2)],
-        Note("A#", 1):  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
-        Note("Bb", 1):  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
-        Note("B", 1) :  [FretboardPosition(6, 19), FretboardPosition(5, 14), FretboardPosition(4, 9),  FretboardPosition(3, 4), FretboardPosition(2, 0)],
-        Note("C", 1) :  [FretboardPosition(6, 20), FretboardPosition(5, 15), FretboardPosition(4, 10), FretboardPosition(3, 5), FretboardPosition(2, 1)],
-        Note("C#", 1) : [FretboardPosition(6, 21), FretboardPosition(5, 16), FretboardPosition(4, 11), FretboardPosition(3, 6), FretboardPosition(2, 2)],
-        Note("Db", 1) : [FretboardPosition(6, 21), FretboardPosition(5, 16), FretboardPosition(4, 11), FretboardPosition(3, 6), FretboardPosition(2, 2)],
-        Note("D", 1) :  [FretboardPosition(6, 22), FretboardPosition(5, 17), FretboardPosition(4, 12), FretboardPosition(3, 7), FretboardPosition(2, 3)],
-        Note("D#", 1) : [FretboardPosition(6, 23), FretboardPosition(5, 18), FretboardPosition(4, 13), FretboardPosition(3, 8), FretboardPosition(2, 4)],
-        Note("Eb", 1) : [FretboardPosition(6, 23), FretboardPosition(5, 18), FretboardPosition(4, 13), FretboardPosition(3, 8), FretboardPosition(2, 4)],
+        str(Note("E", 1)) :  [FretboardPosition(6, 12), FretboardPosition(5, 7),  FretboardPosition(4, 2)],
+        str(Note("F", 1)) :  [FretboardPosition(6, 13), FretboardPosition(5, 8),  FretboardPosition(4, 3)],
+        str(Note("F#", 1)) : [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
+        str(Note("Gb", 1)) : [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
+        str(Note("G", 1)) :  [FretboardPosition(6, 15), FretboardPosition(5, 10), FretboardPosition(4, 5),  FretboardPosition(3, 0)], 
+        str(Note("G#", 1)) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
+        str(Note("Ab", 1)) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
+        str(Note("A", 1)) :  [FretboardPosition(6, 17), FretboardPosition(5, 12), FretboardPosition(4, 7),  FretboardPosition(3, 2)],
+        str(Note("A#", 1)) :  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
+        str(Note("Bb", 1)) :  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
+        str(Note("B", 1)) :  [FretboardPosition(6, 19), FretboardPosition(5, 14), FretboardPosition(4, 9),  FretboardPosition(3, 4), FretboardPosition(2, 0)],
+        str(Note("C", 1)) :  [FretboardPosition(6, 20), FretboardPosition(5, 15), FretboardPosition(4, 10), FretboardPosition(3, 5), FretboardPosition(2, 1)],
+        str(Note("C#", 1)) : [FretboardPosition(6, 21), FretboardPosition(5, 16), FretboardPosition(4, 11), FretboardPosition(3, 6), FretboardPosition(2, 2)],
+        str(Note("Db", 1)) : [FretboardPosition(6, 21), FretboardPosition(5, 16), FretboardPosition(4, 11), FretboardPosition(3, 6), FretboardPosition(2, 2)],
+        str(Note("D", 1)) :  [FretboardPosition(6, 22), FretboardPosition(5, 17), FretboardPosition(4, 12), FretboardPosition(3, 7), FretboardPosition(2, 3)],
+        str(Note("D#", 1)) : [FretboardPosition(6, 23), FretboardPosition(5, 18), FretboardPosition(4, 13), FretboardPosition(3, 8), FretboardPosition(2, 4)],
+        str(Note("Eb", 1)) : [FretboardPosition(6, 23), FretboardPosition(5, 18), FretboardPosition(4, 13), FretboardPosition(3, 8), FretboardPosition(2, 4)],
         
         # Two octaves up
-        Note("E", 2) :  [FretboardPosition(6, 24), FretboardPosition(5, 19), FretboardPosition(4, 14), FretboardPosition(3, 9), FretboardPosition(2, 5), FretboardPosition(1, 0)],
-        Note("F", 2) :  [                          FretboardPosition(5, 20), FretboardPosition(4, 15), FretboardPosition(3, 10), FretboardPosition(2, 6), FretboardPosition(1, 1)],
-        Note("F#", 2) : [                          FretboardPosition(5, 21), FretboardPosition(4, 16), FretboardPosition(3, 11), FretboardPosition(2, 7), FretboardPosition(1, 2)],
-        Note("Gb", 2) : [                          FretboardPosition(5, 21), FretboardPosition(4, 16), FretboardPosition(3, 11), FretboardPosition(2, 7), FretboardPosition(1, 2)],
-        Note("G", 2) :  [                          FretboardPosition(5, 22), FretboardPosition(4, 17), FretboardPosition(3, 12), FretboardPosition(2, 8), FretboardPosition(1, 3)],
-        Note("G#", 2) : [                          FretboardPosition(5, 23), FretboardPosition(4, 18), FretboardPosition(3, 13), FretboardPosition(2, 9), FretboardPosition(1, 4)],
-        Note("Ab", 2) : [                          FretboardPosition(5, 23), FretboardPosition(4, 18), FretboardPosition(3, 13), FretboardPosition(2, 9), FretboardPosition(1, 4)],
-        Note("A", 2) :  [                          FretboardPosition(5, 24), FretboardPosition(4, 19), FretboardPosition(3, 14), FretboardPosition(2, 10), FretboardPosition(1, 5)],
-        Note("A#", 2) : [                                                    FretboardPosition(4, 20), FretboardPosition(3, 15), FretboardPosition(2, 11), FretboardPosition(1, 6)],
-        Note("Bb", 2) : [                                                    FretboardPosition(4, 20), FretboardPosition(3, 15), FretboardPosition(2, 11), FretboardPosition(1, 6)],
-        Note("B", 2) :  [                                                    FretboardPosition(4, 21), FretboardPosition(3, 16), FretboardPosition(2, 12), FretboardPosition(1, 7)],
-        Note("C", 2) :  [                                                    FretboardPosition(4, 22), FretboardPosition(3, 17), FretboardPosition(2, 13), FretboardPosition(1, 8)],
-        Note("C#", 2) : [                                                    FretboardPosition(4, 23), FretboardPosition(3, 18), FretboardPosition(2, 14), FretboardPosition(1, 9)],
-        Note("Db", 2) : [                                                    FretboardPosition(4, 23), FretboardPosition(3, 18), FretboardPosition(2, 14), FretboardPosition(1, 9)],
-        Note("D", 2) :  [                                                    FretboardPosition(4, 24), FretboardPosition(3, 19), FretboardPosition(2, 15), FretboardPosition(1, 10)],
-        Note("D#", 2) : [                                                                              FretboardPosition(3, 20), FretboardPosition(2, 16), FretboardPosition(1, 11)],
-        Note("Eb", 2) : [                                                                              FretboardPosition(3, 20), FretboardPosition(2, 16), FretboardPosition(1, 11)],
+        str(Note("E", 2)) :  [FretboardPosition(6, 24), FretboardPosition(5, 19), FretboardPosition(4, 14), FretboardPosition(3, 9), FretboardPosition(2, 5), FretboardPosition(1, 0)],
+        str(Note("F", 2)) :  [                          FretboardPosition(5, 20), FretboardPosition(4, 15), FretboardPosition(3, 10), FretboardPosition(2, 6), FretboardPosition(1, 1)],
+        str(Note("F#", 2)) : [                          FretboardPosition(5, 21), FretboardPosition(4, 16), FretboardPosition(3, 11), FretboardPosition(2, 7), FretboardPosition(1, 2)],
+        str(Note("Gb", 2)) : [                          FretboardPosition(5, 21), FretboardPosition(4, 16), FretboardPosition(3, 11), FretboardPosition(2, 7), FretboardPosition(1, 2)],
+        str(Note("G", 2)) :  [                          FretboardPosition(5, 22), FretboardPosition(4, 17), FretboardPosition(3, 12), FretboardPosition(2, 8), FretboardPosition(1, 3)],
+        str(Note("G#", 2)) : [                          FretboardPosition(5, 23), FretboardPosition(4, 18), FretboardPosition(3, 13), FretboardPosition(2, 9), FretboardPosition(1, 4)],
+        str(Note("Ab", 2)) : [                          FretboardPosition(5, 23), FretboardPosition(4, 18), FretboardPosition(3, 13), FretboardPosition(2, 9), FretboardPosition(1, 4)],
+        str(Note("A", 2)) :  [                          FretboardPosition(5, 24), FretboardPosition(4, 19), FretboardPosition(3, 14), FretboardPosition(2, 10), FretboardPosition(1, 5)],
+        str(Note("A#", 2)) : [                                                    FretboardPosition(4, 20), FretboardPosition(3, 15), FretboardPosition(2, 11), FretboardPosition(1, 6)],
+        str(Note("Bb", 2)) : [                                                    FretboardPosition(4, 20), FretboardPosition(3, 15), FretboardPosition(2, 11), FretboardPosition(1, 6)],
+        str(Note("B", 2)) :  [                                                    FretboardPosition(4, 21), FretboardPosition(3, 16), FretboardPosition(2, 12), FretboardPosition(1, 7)],
+        str(Note("C", 2)) :  [                                                    FretboardPosition(4, 22), FretboardPosition(3, 17), FretboardPosition(2, 13), FretboardPosition(1, 8)],
+        str(Note("C#", 2)) : [                                                    FretboardPosition(4, 23), FretboardPosition(3, 18), FretboardPosition(2, 14), FretboardPosition(1, 9)],
+        str(Note("Db", 2)) : [                                                    FretboardPosition(4, 23), FretboardPosition(3, 18), FretboardPosition(2, 14), FretboardPosition(1, 9)],
+        str(Note("D", 2)) :  [                                                    FretboardPosition(4, 24), FretboardPosition(3, 19), FretboardPosition(2, 15), FretboardPosition(1, 10)],
+        str(Note("D#", 2)) : [                                                                              FretboardPosition(3, 20), FretboardPosition(2, 16), FretboardPosition(1, 11)],
+        str(Note("Eb", 2)) : [                                                                              FretboardPosition(3, 20), FretboardPosition(2, 16), FretboardPosition(1, 11)],
         
         # Three octaves up
-        Note("E", 3) :  [                                                                              FretboardPosition(3, 21), FretboardPosition(2, 17), FretboardPosition(1, 12)],
-        Note("F", 3) :  [                                                                              FretboardPosition(3, 22), FretboardPosition(2, 18), FretboardPosition(1, 13)],
-        Note("F#", 3) : [                                                                              FretboardPosition(3, 23), FretboardPosition(2, 19), FretboardPosition(1, 14)],
-        Note("Gb", 3) : [                                                                              FretboardPosition(3, 23), FretboardPosition(2, 19), FretboardPosition(1, 14)],
-        Note("G", 3) :  [                                                                              FretboardPosition(3, 24), FretboardPosition(2, 20), FretboardPosition(1, 15)],
-        Note("G#", 3) : [                                                                                                        FretboardPosition(2, 21), FretboardPosition(1, 16)],
-        Note("Ab", 3) : [                                                                                                        FretboardPosition(2, 21), FretboardPosition(1, 16)],
-        Note("A", 3) :  [                                                                                                        FretboardPosition(2, 22), FretboardPosition(1, 17)],
-        Note("A#", 3) : [                                                                                                        FretboardPosition(2, 23), FretboardPosition(1, 18)],
-        Note("Bb", 3) : [                                                                                                        FretboardPosition(2, 23), FretboardPosition(1, 18)],
-        Note("B", 3) :  [                                                                                                        FretboardPosition(2, 24), FretboardPosition(1, 19)],
-        Note("C", 3) :  [                                                                                                                                  FretboardPosition(1, 20)],
-        Note("C#", 3) : [                                                                                                                                  FretboardPosition(1, 21)],
-        Note("Db", 3) : [                                                                                                                                  FretboardPosition(1, 21)],
-        Note("D", 3) :  [                                                                                                                                  FretboardPosition(1, 22)],
-        Note("D#", 3) : [                                                                                                                                  FretboardPosition(1, 23)],
-        Note("Eb", 3) : [                                                                                                                                  FretboardPosition(1, 23)],
+        str(Note("E", 3)) :  [                                                                              FretboardPosition(3, 21), FretboardPosition(2, 17), FretboardPosition(1, 12)],
+        str(Note("F", 3)) :  [                                                                              FretboardPosition(3, 22), FretboardPosition(2, 18), FretboardPosition(1, 13)],
+        str(Note("F#", 3)) : [                                                                              FretboardPosition(3, 23), FretboardPosition(2, 19), FretboardPosition(1, 14)],
+        str(Note("Gb", 3)) : [                                                                              FretboardPosition(3, 23), FretboardPosition(2, 19), FretboardPosition(1, 14)],
+        str(Note("G", 3)) :  [                                                                              FretboardPosition(3, 24), FretboardPosition(2, 20), FretboardPosition(1, 15)],
+        str(Note("G#", 3)) : [                                                                                                        FretboardPosition(2, 21), FretboardPosition(1, 16)],
+        str(Note("Ab", 3)) : [                                                                                                        FretboardPosition(2, 21), FretboardPosition(1, 16)],
+        str(Note("A", 3)) :  [                                                                                                        FretboardPosition(2, 22), FretboardPosition(1, 17)],
+        str(Note("A#", 3)) : [                                                                                                        FretboardPosition(2, 23), FretboardPosition(1, 18)],
+        str(Note("Bb", 3)) : [                                                                                                        FretboardPosition(2, 23), FretboardPosition(1, 18)],
+        str(Note("B", 3)) :  [                                                                                                        FretboardPosition(2, 24), FretboardPosition(1, 19)],
+        str(Note("C", 3)) :  [                                                                                                                                  FretboardPosition(1, 20)],
+        str(Note("C#", 3)) : [                                                                                                                                  FretboardPosition(1, 21)],
+        str(Note("Db", 3)) : [                                                                                                                                  FretboardPosition(1, 21)],
+        str(Note("D", 3)) :  [                                                                                                                                  FretboardPosition(1, 22)],
+        str(Note("D#", 3)) : [                                                                                                                                  FretboardPosition(1, 23)],
+        str(Note("Eb", 3)) : [                                                                                                                                  FretboardPosition(1, 23)],
         
         # Four Octaves up
-        Note("E", 4) :  [                                                                                                                                  FretboardPosition(1, 24)]
+        str(Note("E", 4)) :  [                                                                                                                                  FretboardPosition(1, 24)]
         
         }
 
+
+NOTES = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 CIRCLE_OF_FIFTHS = [
                    "C", 
                    "G", 
@@ -231,7 +251,15 @@ def get_perfect_fifth(note: str):
     keyword arguments:
     note -- string representation of a note. Octave doesn't matter here, so an instance of the Note class is not necessary.
     """
-    # index of the note in the 
+    alternate_notation_map = {"A#" : "Gb",
+                                "C#" : "Db",
+                                "D#" : "Eb",
+                                "F#" : "Gb",
+                                "G#" : "Ab"
+                              }
+    if note in alternate_notation_map.keys():
+        note = alternate_notation_map[note]
+    
     index = CIRCLE_OF_FIFTHS.index(note)
     if index < len(CIRCLE_OF_FIFTHS) - 1:
         perfect_fifth = CIRCLE_OF_FIFTHS[index + 1]
@@ -253,6 +281,89 @@ def get_perfect_fourth(note: str):
     else:
         perfect_fourth = CIRCLE_OF_FIFTHS[len(CIRCLE_OF_FIFTHS)-1]
     return(perfect_fourth)
-        
-        
-            
+       
+def get_corresponding_note(position):
+    keys = TAB_MAP.keys()
+    for note in keys:
+        positions = TAB_MAP[note]
+        if position in positions:
+            split_note = note.split(",")
+            note_name = split_note[0][1:]
+            note_octave = split_note[1]
+            note_octave = note_octave[0:len(note_octave)-1]
+            corresponding_note = Note(note_name, int(note_octave))
+            return(corresponding_note)
+           
+def get_fretboard_position_octave_up(position):
+    """
+    Given a position on the fretboard (e.g. 4th fret on the A string), return a list of positions on the fretboard that would play the corresponding note, one octave up. Useful for determining the notes to play for a chord, given just its root.
+    
+    keyword arguments:
+    position -- an instance of the Fretboard position class
+    """
+    corresponding_note = get_corresponding_note(position)
+    octave_up_note = Note(corresponding_note.note, corresponding_note.octave+1)
+    octave_up_positions = TAB_MAP[str(octave_up_note)]
+    return(octave_up_positions)
+
+def get_fretboard_position_octave_down(position):
+    """
+    Given a position on the fretboard (e.g. 4th fret on the A string), return a list of positions on the fretboard that would play the corresponding note, one octave down. Useful for determining the notes to play for a chord, given just its root.
+    
+    keyword arguments:
+    position -- an instance of the Fretboard position class
+    """
+    corresponding_note = get_corresponding_note(position)
+    octave_down_note = Note(corresponding_note.note, corresponding_note.octave-1)
+    octave_down_positions = TAB_MAP[octave_down_note]
+    return(octave_up_positions)
+
+# you can use this with semitones = 6 to get a tritone chord, procedurally.
+def get_note_x_semitones_up(note: str, semitones: int):
+    """
+    returns the string representation of a note that is some amount of semitones higher than the note provided.
+    
+    keyword arguments
+    note -- string representation of any note, e.g. A#
+    semitones -- how many semitones you want to go up
+    """
+    alternate_notation_map = {"Bb" : "A#",
+                                "Db" : "C#",
+                                "Eb" : "D#",
+                                "Gb" : "F#",
+                                "Ab" : "G#"
+                              }
+    if note in alternate_notation_map.keys():
+        note = alternate_notation_map[note]
+    index = NOTES.index(note)
+    new_index = index + semitones
+    if new_index >= len(NOTES):
+        new_index -= len(NOTES)
+    new_note = NOTES[new_index]
+    return(new_note)
+
+def get_power_chord(root):
+    root_note = get_corresponding_note(root)
+    root_note_perfect_fifth = get_perfect_fifth(root_note.note)
+    root_note_perfect_fifth_instance = Note(root_note_perfect_fifth, root_note.octave)
+    root_note_octave_up = Note(root_note.note, root_note.octave+1)
+    positions = [root,
+                 TAB_MAP[str(root_note_perfect_fifth_instance)],
+                 TAB_MAP[str(root_note_octave_up)]
+    ]
+    return(positions)
+
+def get_tritone_chord(root):
+    root_note = get_corresponding_note(root)
+    six_semitones_up_note = get_note_x_semitones_up(root_note.note, 6)
+    six_semitones_up_note_instance = Note(six_semitones_up_note, root_note.octave)
+    root_note_octave_up = Note(root_note.note, root_note.octave+1)
+    print(root_note)
+    print(six_semitones_up_note_instance)
+    print(root_note_octave_up)
+    positions = [root,
+                 str(TAB_MAP[str(six_semitones_up_note_instance)][1]),
+                 str(TAB_MAP[str(root_note_octave_up)][2])
+    ]
+    return(positions) 
+    
