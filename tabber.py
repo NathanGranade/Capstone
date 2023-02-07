@@ -17,47 +17,77 @@ estringTab = []
 
 def tab(notes):
     for i in notes:
-        if i in Estring:
-            for index, j in enumerate(Estring):
-                if i == j:
-                    EstringTab.append(str(index))
-        else:
-            EstringTab.append('--')
-
-        if i in Astring:
-            for index, j in enumerate(Astring):
-                if i == j:
-                    AstringTab.append(str(index))
-        else:
-            AstringTab.append('--')
-
-        if i in Gstring:
-            for index, j in enumerate(Gstring):
-                if i == j:
-                    GstringTab.append(str(index))
-        else:
-            GstringTab.append('--')
-
-        if i in Dstring:
-            for index, j in enumerate(Dstring):
-                if i == j:
-                    DstringTab.append(str(index))
-        else:
-            DstringTab.append('--')
-
-        if i in Bstring:
-            for index, j in enumerate(Bstring):
-                if i == j:
-                    BstringTab.append(str(index))
-        else:
-            BstringTab.append('-')
-
         if i in estring:
             for index, j in enumerate(estring):
                 if i == j:
                     estringTab.append(str(index))
+                    BstringTab.append('--')
+                    GstringTab.append('--')
+                    DstringTab.append('--')
+                    AstringTab.append('--')
+                    EstringTab.append('--')
         else:
             estringTab.append('--')
+
+            if i in Bstring:
+                for index, j in enumerate(Bstring):
+                    if i == j:
+                        BstringTab.append(str(index))
+                        estringTab.append('--')
+                        GstringTab.append('--')
+                        DstringTab.append('--')
+                        AstringTab.append('--')
+                        EstringTab.append('--')
+            else:
+                BstringTab.append('--')
+
+                if i in Gstring:
+                    for index, j in enumerate(Gstring):
+                        if i == j:
+                            GstringTab.append(str(index))
+                            BstringTab.append('--')
+                            estringTab.append('--')
+                            DstringTab.append('--')
+                            AstringTab.append('--')
+                            EstringTab.append('--')
+                else:
+                    GstringTab.append('--')
+
+                    if i in Dstring:
+                        for index, j in enumerate(Dstring):
+                            if i == j:
+                                DstringTab.append(str(index))
+                                BstringTab.append('--')
+                                GstringTab.append('--')
+                                estringTab.append('--')
+                                AstringTab.append('--')
+                                EstringTab.append('--')
+                    else:
+                        DstringTab.append('--')
+
+                        if i in Astring:
+                            for index, j in enumerate(Astring):
+                                if i == j:
+                                    AstringTab.append(str(index))
+                                    BstringTab.append('--')
+                                    GstringTab.append('--')
+                                    DstringTab.append('--')
+                                    estringTab.append('--')
+                                    EstringTab.append('--')
+                        else:
+                            AstringTab.append('--')
+
+                            if i in Estring:
+                                for index, j in enumerate(Estring):
+                                    if i == j:
+                                        EstringTab.append(str(index))
+                                        BstringTab.append('--')
+                                        GstringTab.append('--')
+                                        DstringTab.append('--')
+                                        AstringTab.append('--')
+                                        estringTab.append('--')
+                            else:
+                                EstringTab.append('--')
 
 notes = transcribe("test.wav")
 tab(notes)
