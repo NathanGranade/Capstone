@@ -8,7 +8,7 @@ import random
 import MySQLdb
 import os
 
-from transcriber import *
+from transcriber import transcribe
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -38,7 +38,9 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-        Tscript = transcribe(f)
+        
+        Tscript = transcribe(f.filename)
+        
 
     return render_template('app.html')
 

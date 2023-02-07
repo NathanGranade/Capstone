@@ -62,13 +62,16 @@ def number_to_freq(n): return 440 * 2.0**((n-69)/12.0)
 def note_name(n): return NOTE_NAMES[n % 12] + str(int(n/12 - 1))
 
 def transcribe(AUDIO_FILE):
-  file = open("Tab.txt", "+w")
+  filepath = os.path.join('C:/Users/wmpsa/Documents/capstone/Capstone/flask/demo/Tabs', 'Tab.txt')
+  if not os.path.exists('C:/Users/wmpsa/Documents/capstone/Capstone/flask/demo/Tabs'):
+    os.makedirs('C:/Users/wmpsa/Documents/capstone/Capstone/flask/demo/Tabs')
+  file = open(filepath, "+w")
 
   allowed_extention = {"wav"}
   if AUDIO_FILE == "" :
     return []
   if isinstance(AUDIO_FILE, str) == False:
-    return "Input is not String! Enter file name as string in .wav format"
+    return "Input is not String! Enter file name as string"
   if AUDIO_FILE[-4:] != '.wav':
     return "Incorrect file type! This program accepts files of .wav format."
   try:
@@ -121,8 +124,8 @@ def transcribe(AUDIO_FILE):
         notes.append(s)
 
     prev_note = s
-  notes  = ", ".join(notes)
-  file.write(notes)
+  Notes  = ", ".join(notes)
+  file.write(Notes)
   return notes
 
 # prints the list of notes
