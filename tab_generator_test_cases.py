@@ -165,7 +165,9 @@ input("Test Complete: generate tab for song played using more than one string (ã
 os.system("cls")
 
 bikini_sports_ponchin_tab_dictionary = tab_generator.generate_tab_dictionary(notes)
-print("dictionary created")
+print("dictionary created:\n")
+
+print(bikini_sports_ponchin_tab_dictionary)
 bikini_sports_ponchin_tab = tab_generator.generate_tab(bikini_sports_ponchin_tab_dictionary)
 print("tab created")
 

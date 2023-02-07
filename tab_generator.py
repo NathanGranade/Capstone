@@ -85,6 +85,9 @@ class Term:
     def __init__(self, number: int, position):
         self.number = number
         self.position = position
+    
+    def __str__(self):
+        return(f"Note #{self.number}: {self.position}")
 
 class Tab_Dictionary:
     def __init__(self, dictionary, length):
@@ -100,6 +103,19 @@ class Tab_Dictionary:
             return(True)
         else:
             return(False)
+    
+    def __str__(self):
+        output = ""
+        keys = self.keys()
+        for key in keys:
+            output += f"String #{key}:"
+            for term in self[key]:
+                output += f"\n\t{term}"
+            output += "\n"
+        return(output)
+        
+    def keys(self):
+        return(self.dictionary.keys())
         
 
 # This is all the ways you can play any given note on a guitar's fretboard, under the presumption that you have a 6 string guitar with 24 frets.
@@ -449,9 +465,15 @@ def generate_tab_dictionary(notes):
     for position in positions:
         tab_dictionary[position.string].append(Term(counter, position.fret))
         counter += 1
-    return(Tab_Dictionary(tab_dictionary, counter-1))
+    return(Tab_Dictionary(tab_dictionary, counter))
         
 def generate_tab(tab_dictionary):
+    """
+    Generates and prints a tab to stdout, given a Tab_Dictionary instance.
+    
+    keyword arguments:
+    tab_dictionary -- an instance of the Tab_Dictionary class.
+    """
     tab = {6 : [],
                       5 : [],
                       4 : [],
@@ -460,16 +482,20 @@ def generate_tab(tab_dictionary):
                       1 : []
                      }
     counter = 1
-    keys = tab_dictionary.dictionary.keys()
+    keys = tab_dictionary.keys()
+    
     for key in keys:
-        terms = tab_dictionary.dictionary[key]
+        terms = tab_dictionary[key]
         for term in terms:
             if term.number == counter:
                 tab[key].append(f"{term.position}-")
-                for key in keys
+                for otherkey in keys:
+                    if key != otherkey:
+                        tab[otherkey].append("--")
+                counter += 1
             else:
                 tab[key].append("-")
-            counter += 1
+    print(f"Counter = {counter}")
     for key in tab:
         print(f"{key}|-", end = "")
         frets = tab[key]
