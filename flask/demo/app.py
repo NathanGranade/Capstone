@@ -1,12 +1,24 @@
 from flask import Flask
 from views import views
-from flask import Flask,render_template, request
+from flask import Flask, flash, render_template, request, redirect, url_for
+from flask_dropzone import Dropzone
 from flask_mysqldb import MySQL
+from werkzeug.utils import secure_filename
 import random
 import MySQLdb
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.register_blueprint(views, url_prefix="/")
+app.config.update(
+   UPLOADED_PATH = os.path.join(basedir, 'uploads'),
+   DROPZONE_MAX_FILE_SIZE = 1024,
+   DROPZONE_TIMEOUT = 5*60*1000
+)
+
+dropzone = Dropzone(app)
     
 app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
 app.config['MYSQL_USER'] = "sql9591604"
@@ -19,7 +31,13 @@ mysql = MySQL(app)
 def form():
     return render_template('form.html')
 
- 
+@app.route('/app', methods = ['POST', 'GET'])
+def upload():
+    if request.method == 'POST':
+        f = request.files.get('file')
+        f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+    return render_template('app.html')
+
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if request.method == 'GET':
