@@ -61,9 +61,9 @@ def number_to_freq(n): return 440 * 2.0**((n-69)/12.0)
 def note_name(n): return NOTE_NAMES[n % 12] + str(int(n/12 - 1))
 
 def transcribe(AUDIO_FILE):
-  filepath = os.path.join('Capstone/flask/demo/Tabs', 'Tab.txt')
-  if not os.path.exists('Capstone/flask/demo/Tabs'):
-    os.makedirs('Capstone/flask/demo/Tabs')
+  filepath = os.path.join('Tabs', 'Tab.txt')
+  if not os.path.exists('Tabs'):
+    os.makedirs('Tabs')
   file = open(filepath, "+w")
 
   allowed_extention = {"wav"}
