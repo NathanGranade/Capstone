@@ -8,6 +8,8 @@ import random
 import MySQLdb
 import os
 
+from transcriber import *
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
@@ -36,6 +38,8 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+        Tscript = transcribe(f)
+
     return render_template('app.html')
 
 @app.route('/login', methods = ['POST', 'GET'])

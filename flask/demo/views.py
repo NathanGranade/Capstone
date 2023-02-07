@@ -13,5 +13,3 @@ def app():
 @views.route("/register")
 def register():
     return render_template("login.html")
-
-
