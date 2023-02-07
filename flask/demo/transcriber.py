@@ -128,7 +128,6 @@ def transcribe(AUDIO_FILE):
   return notes
 
 # prints the list of notes
-sheetnotes =transcribe("test.wav")
-print(sheetnotes)
+transcribe("test.wav")
 
   
