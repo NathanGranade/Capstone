@@ -42,15 +42,21 @@ def upload():
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         Tscript = transcribe(f.filename)
         session["var"] = Tscript
+        songnotes = Tscript
+        songID = random.randrange(1000)
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO Transcriptions (Notes, SongID) VALUES(%s,%s)''',(songnotes, songID))
+        mysql.connection.commit()
+        cursor.close()
     return render_template('app.html')
 
 @app.route('/display')
 def display():
-    if "var" in session:
-        var = session["var"]
-        return f"{var}"
-    else:
-        return "no data in session"
+        if "var" in session:
+            var = session["var"]
+            return f"{var}"
+        else:
+            return "no data in session"
 
 
     
@@ -69,7 +75,7 @@ def login():
         cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
         mysql.connection.commit()
         cursor.close()
-        return f"Done!!"
+        return f"Registered!"
 
 if __name__ == '__main__':
     app.run(debug = True, port = 8000)

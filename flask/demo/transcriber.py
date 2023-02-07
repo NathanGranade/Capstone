@@ -1,7 +1,6 @@
 from scipy.fftpack import fft
 from scipy.io import wavfile # get the api
 import os
-
 import numpy as np
 
 # Configuration
@@ -129,6 +128,7 @@ def transcribe(AUDIO_FILE):
   return notes
 
 # prints the list of notes
-print(transcribe("test.wav"))
+sheetnotes =transcribe("test.wav")
+print(sheetnotes)
 
   
