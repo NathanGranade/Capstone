@@ -13,8 +13,3 @@ def app():
 @views.route("/register")
 def register():
     return render_template("login.html")
-
-@views.route("/tuner")
-def tuner():
-    return render_template("tuner.html")
-
