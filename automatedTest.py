@@ -5,7 +5,7 @@ def automatedTest():
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser = webdriver.Chrome(options=options)
-    #browser = Chrome()
+    
     browser.get('http://127.0.0.1:8000/')
 
     button = browser.find_element("id","register")
@@ -21,6 +21,8 @@ def automatedTest():
     password.send_keys("AutOmAtEdTeSt1234")
     time.sleep(5)
     submit = browser.find_element("id", "submit")
+    submit.click()
+    time.sleep(5)
     return "Test Passed!"
 
 if __name__ == '__main__':
