@@ -14,3 +14,9 @@ def app():
 def register():
     return render_template("login.html")
 
+@views.route("/tuner")
+def tuner():
+    return render_template("tuner.html")
+@views.route("/about")
+def about():
+    return render_template("about.html")

@@ -6,8 +6,8 @@ from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 import random
 import MySQLdb
+import tuner
 import os
-
 
 from transcriber import transcribe
 
@@ -51,6 +51,12 @@ def display():
         return f"{var}"
     else:
         return "no data in session"
+@app.route('/tuner')
+def tune():
+    x = tuner.run()
+    pass
+    
+    
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
