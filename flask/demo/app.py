@@ -1,12 +1,13 @@
 from flask import Flask
 from views import views
-from flask import Flask, flash, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for, session
 from flask_dropzone import Dropzone
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 import random
 import MySQLdb
 import os
+
 
 from transcriber import transcribe
 
@@ -38,11 +39,16 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-        
         Tscript = transcribe(f.filename)
-        
 
-    return render_template('app.html')
+        
+    return redirect(url_for('display')), render_template('app.html')
+
+@app.route('/display')
+def display():
+    my_var = request.args.get('my_var', None)
+
+    return render_template('display.html', d = "Tscript")
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
