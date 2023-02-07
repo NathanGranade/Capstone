@@ -14,6 +14,7 @@ from transcriber import transcribe
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 app.register_blueprint(views, url_prefix="/")
 app.config.update(
    UPLOADED_PATH = os.path.join(basedir, 'uploads'),
@@ -40,15 +41,16 @@ def upload():
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         Tscript = transcribe(f.filename)
-
-        
-    return redirect(url_for('display')), render_template('app.html')
+        session["var"] = Tscript
+    return render_template('app.html')
 
 @app.route('/display')
 def display():
-    my_var = request.args.get('my_var', None)
-
-    return render_template('display.html', d = "Tscript")
+    if "var" in session:
+        var = session["var"]
+        return f"{var}"
+    else:
+        return "no data in session"
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():

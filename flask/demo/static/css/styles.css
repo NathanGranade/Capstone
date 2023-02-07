@@ -95,7 +95,7 @@ a:visited {
   -webkit-user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  width: 10%;
+  width: 100%;
 }
 
 .button-19:after {
