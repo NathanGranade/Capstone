@@ -90,6 +90,17 @@ class Tab_Dictionary:
     def __init__(self, dictionary, length):
         self.dictionary = dictionary
         self.length = length
+    
+    def __getitem__(self, item):
+        if item in self.dictionary.keys():
+            return(self.dictionary[item])
+    
+    def __contains__(self, item):
+        if item in self.dictionary.keys():
+            return(True)
+        else:
+            return(False)
+        
 
 # This is all the ways you can play any given note on a guitar's fretboard, under the presumption that you have a 6 string guitar with 24 frets.
 # To handle other tunings, just transpose (see transpose function) from Standard E tuning.
@@ -449,11 +460,13 @@ def generate_tab(tab_dictionary):
                       1 : []
                      }
     counter = 1
-    for key in tab_dictionary.dictionary.keys():
+    keys = tab_dictionary.dictionary.keys()
+    for key in keys:
         terms = tab_dictionary.dictionary[key]
         for term in terms:
             if term.number == counter:
                 tab[key].append(f"{term.position}-")
+                for key in keys
             else:
                 tab[key].append("-")
             counter += 1
