@@ -111,7 +111,53 @@ for key in tablature.keys():
     for fret in tablature[key]:
         print(f"{fret}", end = "-")
     print()
-    
+
+# test for intelligently determining the most sensical way to play the next note on the fretboard
+# bikini sports ponchin
+notes = [
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("E", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("C", 0),
+    tab_generator.Note("A", 0)
+]
+positions = []
+counter = 1
+for note in notes:
+    options = tab_generator.TAB_MAP[str(note)]
+    if counter == 1:
+        first = options[0]
+        positions.append(first)
+        previous = first
+        counter = 2
+    else:
+        easiest = tab_generator.get_best_next_position(previous, options)
+        positions.append(easiest)
+        previous = easiest
+for position in positions:
+    print(position)
+tablature = {6 : [],
+5 : [],
+4 : [],
+3 : [],
+2 : [],
+1 : []
+}
+for position in positions:
+    tablature[position.string].append(position.fret)
+for key in tablature.keys():
+    print(f"{key}|-", end = "")
+    for fret in tablature[key]:
+        print(f"{fret}", end = "-")
+    print()
+
+
 # tests for generating the right powerchord
 f_power_chord_tabs = tab_generator.get_power_chord(tab_generator.FretboardPosition(6, 1))
 f_tritone_tabs = tab_generator.get_tritone_chord(tab_generator.FretboardPosition(6, 1))

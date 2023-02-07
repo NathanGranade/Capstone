@@ -72,6 +72,9 @@ class FretboardPosition:
         return(f"(String {self.string}, fret {self.fret})")
     
     def __eq__(self, other):
+        if other == None:
+            return False
+        
         if (self.string == other.string) and (self.fret == other.fret):
             return True
         else:
@@ -179,13 +182,42 @@ CIRCLE_OF_FIFTHS = [
                    "Bb", 
                    "F"]
 
-def lateral_fretboard_distance(note1, note2):
+def lateral_fretboard_distance(position1, position2):
     """returns the lateral distance (how many frets away) this note is from another note on the fretboard. Used to determine whether or not the note should be on the same string, or a different string. E.g. it is extremely difficult to go from the 3rd fret to the 9th fret on the E string, so it would be better to play the 3rd fret on the E string, then the 4th fret on the A string."""
-    if TAB_MAP[note1].string == TAB_MAP[note2].string:
-        highest_fret = max(TAB_MAP[note1].fret, TAB_MAP[note2].fret)
-        lowest_fret = min(TAB_MAP[note1].fret, TAB_MAP[note2].fret)
-        return highest_fret - lowest_fret
+    if position1.fret > position2.fret:
+        return(position1.fret - position2.fret)
+    elif position1.fret < position2.fret:
+        return(position2.fret - position1.fret)
+    else:
+        return(0)
 
+
+def get_best_next_position(previous, options):
+    lateral_distances = []
+    # get the lateral distance of every position on the fretboard that plays the note that comes after the "previous" argument
+    for option in options:
+        lateral_distance = lateral_fretboard_distance(previous, option)
+        lateral_distances.append(lateral_distance)
+    print(lateral_distances)
+    
+    
+    # smallest distance
+    smallest_distance = min(lateral_distances)
+    smallest_distance_index = lateral_distances.index(smallest_distance)
+    nearest = options[smallest_distance_index]
+    return(nearest)
+    
+    # filter the positions based on whether or not they are too far away (distance = 6+)
+    """
+    candidates = []
+    for x in range(0, len(lateral_distances)):
+        distance = lateral_distances[x]
+        if distance <= 5:
+            candidates.append(options[x])
+    
+    return(candidates)
+    """
+        
 """
 def note_to_fret(note, previous = None):
     # previous argument is if you want the placement of the note to be contextual. For example, if the previous note is the 3rd fret on the E string, then the next note should not be the 11th fret on the E string, as this will be hard to reach. It should instead then be the 6th fret on the A string
