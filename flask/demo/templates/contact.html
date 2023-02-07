@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLAB</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Roboto&display=swap" rel="stylesheet">
@@ -15,21 +15,26 @@
     <navigation>
         <div class="navbar" >
             <ul class="nav-list">
-                <li><a href="register" id="register">sign up</a></li>
                 <li><a href="/">clab🎧</a></li>
-                <li><a href="tuner" id="tuner">tuner</a></li>
-                <li><a href="about">about</a></li>
-                <li><a href="contact">contact</a></li>
+                <li><a href="/">about</a></li>
+                <li><a href="/">contact</a></li>
             </ul>
         </div>
     </navigation>
-    <div class="title-body">
-        <h1 class="title">CLAB🎵</h1>
-        <p class="title-text">Music Transcription Tool</p>
-        <div class="controls">
-        <button class="button-19"><a href="app">Get Started >></a></button>
-        </div>
-    </div>
-
+    <style>
+    a:visited {
+    color: green;
+    }   
+    a:active {
+        color: blue;
+      }
+    </style>
+    <div style=padding:20px;">
+        <h2>Contact Info</h2>
+        <p>Email - clab@gmail.com</p>
+        
+        <p>Github <a href = https://github.com/NathanGranade/Capstone target="_blank"> repo </a></p>
+        
+      </div>
 </body>
 </html>
