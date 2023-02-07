@@ -112,6 +112,9 @@ for key in tablature.keys():
         print(f"{fret}", end = "-")
     print()
 
+input("Test Complete: create tab for song played on one string (Pig Destroyer - Naked Trees)\nPress ENTER to start next test.")
+os.system("cls")
+
 # test for intelligently determining the most sensical way to play the next note on the fretboard
 # bikini sports ponchin
 notes = [
@@ -140,8 +143,9 @@ for note in notes:
         easiest = tab_generator.get_best_next_position(previous, options)
         positions.append(easiest)
         previous = easiest
-for position in positions:
-    print(position)
+
+#for position in positions:
+    #print(position)
 tablature = {6 : [],
 5 : [],
 4 : [],
@@ -157,6 +161,16 @@ for key in tablature.keys():
         print(f"{fret}", end = "-")
     print()
 
+input("Test Complete: generate tab for song played using more than one string (マキシマムザホルモン　ー　ビキニスポツポンチ)\nPress ENTER to start next test.")
+os.system("cls")
+
+bikini_sports_ponchin_tab_dictionary = tab_generator.generate_tab_dictionary(notes)
+print("dictionary created")
+bikini_sports_ponchin_tab = tab_generator.generate_tab(bikini_sports_ponchin_tab_dictionary)
+print("tab created")
+
+input("Test Complete: generate_tab_dictionary and generate_tab method in conjunction\nPress ENTER to start next test.")
+os.system("cls")
 
 # tests for generating the right powerchord
 f_power_chord_tabs = tab_generator.get_power_chord(tab_generator.FretboardPosition(6, 1))

@@ -80,10 +80,23 @@ class FretboardPosition:
         else:
             return False
 
+# used to keep track of what note goes where in the tab
+class Term:
+    def __init__(self, number: int, position):
+        self.number = number
+        self.position = position
+
+class Tab_Dictionary:
+    def __init__(self, dictionary, length):
+        self.dictionary = dictionary
+        self.length = length
+
 # This is all the ways you can play any given note on a guitar's fretboard, under the presumption that you have a 6 string guitar with 24 frets.
 # To handle other tunings, just transpose (see transpose function) from Standard E tuning.
 # For example, D Standard is 1 whole step lower than E standard, so to transpose E → D, move DOWN each fretboard position by 2, except for where the fret is 0.
 #                                                                   to transpose D → E, moe UP each fretboard position by 2, except for where the fret is 24.
+# NOTE: the keys are now the string representations of the Note instances
+# WHY?: Python was trying to match these instances and failing, though their attributes were matching, because they were not literally the same in memory.
 TAB_MAP = {
         str(Note("E", 0)) :  [FretboardPosition(6, 0)], 
         str(Note("F", 0)) :  [FretboardPosition(6, 1)],
@@ -198,14 +211,16 @@ def get_best_next_position(previous, options):
     for option in options:
         lateral_distance = lateral_fretboard_distance(previous, option)
         lateral_distances.append(lateral_distance)
-    print(lateral_distances)
+    #print(lateral_distances)
     
-    
-    # smallest distance
-    smallest_distance = min(lateral_distances)
-    smallest_distance_index = lateral_distances.index(smallest_distance)
-    nearest = options[smallest_distance_index]
-    return(nearest)
+    if (options[0].string == previous.string) and lateral_fretboard_distance(options[0], previous) < 5:
+        return(options[0])
+    else:
+        # smallest distance
+        smallest_distance = min(lateral_distances)
+        smallest_distance_index = lateral_distances.index(smallest_distance)
+        nearest = options[smallest_distance_index]
+        return(nearest)
     
     # filter the positions based on whether or not they are too far away (distance = 6+)
     """
@@ -398,4 +413,56 @@ def get_tritone_chord(root):
                  str(TAB_MAP[str(root_note_octave_up)][2])
     ]
     return(positions) 
+
+def generate_tab_dictionary(notes):
+    positions = []
+    first = TAB_MAP[str(notes[0])][0]
+    positions.append(first)
+    previous = first
     
+    for x in range(1, len(notes)):
+        note = notes[x]
+        options = TAB_MAP[str(note)]
+        easiest = get_best_next_position(previous, options)
+        positions.append(easiest)
+        previous = easiest
+    
+    tab_dictionary = {6 : [],
+                      5 : [],
+                      4 : [],
+                      3 : [],
+                      2 : [],
+                      1 : []
+                     }
+    counter = 1
+    for position in positions:
+        tab_dictionary[position.string].append(Term(counter, position.fret))
+        counter += 1
+    return(Tab_Dictionary(tab_dictionary, counter-1))
+        
+def generate_tab(tab_dictionary):
+    tab = {6 : [],
+                      5 : [],
+                      4 : [],
+                      3 : [],
+                      2 : [],
+                      1 : []
+                     }
+    counter = 1
+    for key in tab_dictionary.dictionary.keys():
+        terms = tab_dictionary.dictionary[key]
+        for term in terms:
+            if term.number == counter:
+                tab[key].append(f"{term.position}-")
+            else:
+                tab[key].append("-")
+            counter += 1
+    for key in tab:
+        print(f"{key}|-", end = "")
+        frets = tab[key]
+        for fret in frets:
+            print(fret, end = "")
+        print()
+        
+        
+     
