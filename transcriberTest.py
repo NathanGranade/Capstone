@@ -16,7 +16,7 @@ class TestSum(unittest.TestCase):
         self.assertEqual(transcriber.transcribe(data), expected, f'Output is {transcriber.transcribe(data)} rather than {expected}')
     def test_isNotString(self):
         data = 5
-        expected = "Input is not String! Enter file name as string in .wav format"
+        expected = "Input is not String! Enter file name as string"
         output = transcriber.transcribe(data)
         self.assertEqual(transcriber.transcribe(data), expected, f"Output is {transcriber.transcribe(data)} rather than {expected}")
     def test_notWav(self):
