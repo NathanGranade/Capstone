@@ -43,14 +43,15 @@ a:visited {
     font-size: 8em;
 }
 
-.title-body {
+.dropzone{
+    background-color: black;
+    color: white;
     border-radius: 2em;
     position: fixed;
     top: 40%;
     left: 50%;
-    
     text-align: center;
-    opacity: 70%;
+    opacity: 30%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     border: dotted;

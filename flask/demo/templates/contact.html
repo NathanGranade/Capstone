@@ -11,6 +11,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&family=Roboto&display=swap" rel="stylesheet">
 </head>
+<style>
+    .message{
+        height: 10em;
+        width: 50%;
+    }
+    #b1 {
+        position: relative;
+        width: 30%;
+        height: 10%;
+    }
+
+</style>
 <body>
     <navigation>
         <div class="navbar" >
@@ -23,14 +35,14 @@
             </ul>
         </div>
     </navigation>
-    <style>
-    </style>
-    <div style=padding:20px;">
-        <h2>Contact Info</h2>
-        <p>Email - clab@gmail.com</p>
-        
-        <p>Github <a href = https://github.com/NathanGranade/Capstone target="_blank"> repo </a></p>
-        
+
+    <div class="title-body">
+        <h1>Contact Us!</h1>
+        <p>Email <input id="email" type = "text" name = "email" placeholder="email"/></p>
+        <p>Name <input id="username" type = "text" name = "username" placeholder="username"/></p>
+        <p>Body <input class="message" type = "text" name = "password" placeholder="Message..."/></p>
+      <div class="controls" id="b1"><input class="button-19" id="submit" type = "submit"/></div>
       </div>
+
 </body>
 </html>

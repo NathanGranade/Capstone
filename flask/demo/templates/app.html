@@ -24,12 +24,10 @@
             </ul>
         </div>
     </navigation>
-    <div class="title-body">
-        <p class="title-text">drag or drop file here</p>
         {{ dropzone.create(action='upload') }}
         {{ dropzone.load_js() }}
         {{ dropzone.config() }}
-    </div>
+        {{ dropzone.style('background-color: grey') }}
     <div class="controls">
         <form action="/display" type="submit">
     <button class="button-19">Upload WAV</button>
