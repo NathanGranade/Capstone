@@ -59,13 +59,21 @@ def display():
             return "no data in session"
 
 
-    
+@app.route('/search')
+def search(): 
+        if request.method == 'POST':
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT * from Transcriptions")
+            data = cursor.fetchone()
+            mysql.connection.commit()
+            cursor.close()
+            return print(data)
+        return render_template('search.html')
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if request.method == 'GET':
         return "Login via the login Form"
-     
     if request.method == 'POST':
         email = request.form['email']
         username = request.form['username']
