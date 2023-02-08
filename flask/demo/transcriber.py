@@ -128,6 +128,6 @@ def transcribe(AUDIO_FILE):
   return notes
 
 # prints the list of notes
-transcribe("test.wav")
+print(transcribe("test.wav"))
 
   

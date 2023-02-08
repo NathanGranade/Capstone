@@ -21,7 +21,10 @@ def automatedTest():
     time.sleep(5)
     submit = browser.find_element("id", "submit")
     submit.click()
+    source = browser.page_source
+    search_text = "USER REGISTERED"
     time.sleep(5)
+    print(search_text in source)
     return "Test Passed!"
 
 if __name__ == '__main__':
