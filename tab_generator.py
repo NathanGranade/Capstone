@@ -442,11 +442,24 @@ def get_tritone_chord(root):
     return(positions) 
 
 def generate_tab_dictionary(notes):
+    """
+    Generates an instance of the  Tab_Dictionary class, given a list of notes. The Tab_Dictionary instance associates all the notes with a sequence number by putting them in a Term instance, and then associates those notes with a string. This provides all the information needed to create a tab.
+    
+    keyword arguments
+    notes -- a list of instances of the Note class
+    """
     positions = []
-    first = TAB_MAP[str(notes[0])][0]
+    # get_best_next_position() method requires a previous note to be referenced
+    # so it can determine the what the next best note to play is, but if we are
+    # on the first note, then there is nothing to reference, so manually insert
+    # the first note, always.
+    first = TAB_MAP[str(notes[0])][0] # final [0] prefers the 6th string over others
     positions.append(first)
     previous = first
     
+    # for every other note, determine what position is the easiest way
+    # to play the note, given the context of what was just played previously.
+    # then add this to the positions list
     for x in range(1, len(notes)):
         note = notes[x]
         options = TAB_MAP[str(note)]
@@ -454,6 +467,7 @@ def generate_tab_dictionary(notes):
         positions.append(easiest)
         previous = easiest
     
+    # represent tab as a dictionary
     tab_dictionary = {6 : [],
                       5 : [],
                       4 : [],
@@ -461,7 +475,12 @@ def generate_tab_dictionary(notes):
                       2 : [],
                       1 : []
                      }
+    # determines length of dictionary ahead of time, so no iterating through all keys later
     counter = 1
+    
+    # take each note and create a Term instance, which associates a sequence number
+    # with that note. Then associate the Term with the string. Now we know what is being
+    # played, when, and on what string. Boom. A tablature.
     for position in positions:
         tab_dictionary[position.string].append(Term(counter, position.fret))
         counter += 1
@@ -474,6 +493,8 @@ def generate_tab(tab_dictionary):
     keyword arguments:
     tab_dictionary -- an instance of the Tab_Dictionary class.
     """
+    
+    # represent tab to be printed as a dictionary
     tab = {6 : [],
                       5 : [],
                       4 : [],
@@ -484,18 +505,27 @@ def generate_tab(tab_dictionary):
     counter = 1
     keys = tab_dictionary.keys()
     
+    # go through every key (string)
     for key in keys:
         terms = tab_dictionary[key]
+        # go through every note that is played on that string
         for term in terms:
+            # if the note has the sequence number of the 
+            # current note, then add it to the tab
             if term.number == counter:
                 tab[key].append(f"{term.position}-")
+                # add -'s to every other string
                 for otherkey in keys:
                     if key != otherkey:
-                        tab[otherkey].append("--")
+                        tab[otherkey].append("--"*len(str(term.position))) # * len(str(position)) part makes
+                        #                                                     it so stuff aligns when you put
+                        #                                                     a double digit fret
+                # move onto next note in sequence
                 counter += 1
             else:
                 tab[key].append("-")
-    print(f"Counter = {counter}")
+    #print(f"Counter = {counter}") -- this was for debugging
+    # actually print the tab
     for key in tab:
         print(f"{key}|-", end = "")
         frets = tab[key]
