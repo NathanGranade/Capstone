@@ -24,15 +24,16 @@
             </ul>
         </div>
     </navigation>
-  
-    </div>
-
-    <div class="search-form">
-        <h1></h1>
-    <form action="/search" method = "GET">
-        <p>songid <input id="songid" type = "int" name = "Song ID" placeholder="#"/></p>
-        <p><input class="button-19" id="submit" type = "submit" value = "Search" /></p>
-    </div>
+     
+    <form action="/search" method = "POST"></form>
+        <p>SongID <input id="SongID" type = "int" name = "songID" placeholder="Song ID Number"/></p>
+        <form action="/retrieve" type="submit">
+        <p><input class="button-19" id="submit" type = "submit" value = "Retrieve Notes" /></p>
+        </form> 
+        <div class="controls">
+            <p id="response"></p>
+        <div>
+    </form>
 
 
 

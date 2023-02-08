@@ -58,17 +58,28 @@ def display():
         else:
             return render_template('display.html', var ='no data in session')
 
+@app.route('/retrieve')
+def retrieve():
+        if "var" in session:
+            var = session["var"]
+            return render_template('display.html', var = var)
+        else:
+            return render_template('display.html', var ='no data in session')
 
-@app.route('/search')
+@app.route('/search', methods = ['POST', 'GET'])
 def search(): 
+        if request.method == 'GET':
+            return render_template('search.html')
+
         if request.method == 'POST':
+            songID = request.form['songID']
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT * from Transcriptions")
+            cursor.execute('''SELECT * from Transcriptions WHERE songID = (%s)''',(songID))
             data = cursor.fetchone()
             mysql.connection.commit()
+            session["var"] = songID
             cursor.close()
-            return print(data)
-        return render_template('search.html')
+            return render_template('display.html', var = songID)
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
