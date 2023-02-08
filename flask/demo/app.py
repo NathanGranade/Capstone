@@ -54,9 +54,9 @@ def upload():
 def display():
         if "var" in session:
             var = session["var"]
-            return f"{var}"
+            return render_template('display.html', var = var)
         else:
-            return "no data in session"
+            return render_template('display.html', var ='no data in session')
 
 
 @app.route('/search')
@@ -73,7 +73,8 @@ def search():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        return "Login via the login Form"
+        return render_template('login.html')
+     
     if request.method == 'POST':
         email = request.form['email']
         username = request.form['username']
@@ -83,7 +84,11 @@ def login():
         cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
         mysql.connection.commit()
         cursor.close()
-        return f"Registered!"
+    if email and username and password:
+        return render_template('login.html', d = "USER REGISTERED")
+    else:
+        return render_template('login.html', d = "Please fill out all forums.")
+
 
 if __name__ == '__main__':
     app.run(debug = True, port = 8000)

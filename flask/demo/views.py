@@ -17,9 +17,11 @@ def register():
 @views.route("/tuner")
 def tuner():
     return render_template("tuner.html")
+    
 @views.route("/about")
 def about():
     return render_template("about.html")
+
 @views.route("/contact")
 def contact():
     return render_template("contact.html")
