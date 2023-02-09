@@ -441,6 +441,26 @@ def get_tritone_chord(root):
     ]
     return(positions) 
 
+def parse_transcriber_note(note: str):
+    """
+    Reads the string representation of notes from the transcriber app and converts it to the equivalent Note instance
+    representation. For example E2 → Note("E", 0)
+    
+    keyword arguments
+    note -- string representation of the note as they are provided by the transcriber application
+    """
+    note_name = note[:len(note)]
+    
+    # last character is always a number corresponding to the octave
+    octave = int(note[len(note)-1]) 
+    
+    # open E on a EADGBe guitar is E2 in transcriber.
+    # but Note("E", 0) in this application. So decrement octave by 2.
+    octave -= 2
+    
+    equivalent_note_instance = Note(note_name, octave)
+    return(equivalent_note_instance)
+    
 def generate_tab_dictionary(notes):
     """
     Generates an instance of the  Tab_Dictionary class, given a list of notes. The Tab_Dictionary instance associates all the notes with a sequence number by putting them in a Term instance, and then associates those notes with a string. This provides all the information needed to create a tab.
@@ -525,13 +545,16 @@ def generate_tab(tab_dictionary):
             else:
                 tab[key].append("-")
     #print(f"Counter = {counter}") -- this was for debugging
+    
     # actually print the tab
+    tab_string = "" 
     for key in tab:
-        print(f"{key}|-", end = "")
+        tab_string += f"{key}|-"
         frets = tab[key]
         for fret in frets:
-            print(fret, end = "")
-        print()
+            tab_string += fret
+        tab_string += "\n"
+    return(tab_string)
         
         
      

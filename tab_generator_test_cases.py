@@ -169,6 +169,7 @@ print("dictionary created:\n")
 
 print(bikini_sports_ponchin_tab_dictionary)
 bikini_sports_ponchin_tab = tab_generator.generate_tab(bikini_sports_ponchin_tab_dictionary)
+print(bikini_sports_ponchin_tab)
 print("tab created")
 
 input("Test Complete: generate_tab_dictionary and generate_tab method in conjunction\nPress ENTER to start next test.")
