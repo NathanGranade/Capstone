@@ -526,26 +526,27 @@ def generate_tab(tab_dictionary):
     keys = tab_dictionary.keys()
     
     # go through every key (string)
-    for key in keys:
-        terms = tab_dictionary[key]
-        # go through every note that is played on that string
-        for term in terms:
-            # if the note has the sequence number of the 
-            # current note, then add it to the tab
-            if term.number == counter:
-                tab[key].append(f"{term.position}-")
-                # add -'s to every other string
-                for otherkey in keys:
-                    if key != otherkey:
-                        tab[otherkey].append("--"*len(str(term.position))) # * len(str(position)) part makes
-                        #                                                     it so stuff aligns when you put
-                        #                                                     a double digit fret
-                # move onto next note in sequence
-                counter += 1
-            else:
-                tab[key].append("-")
-    #print(f"Counter = {counter}") -- this was for debugging
-    
+    while counter != tab_dictionary.length:
+        for key in keys:
+            terms = tab_dictionary[key]
+            # go through every note that is played on that string
+            for term in terms:
+                # if the note has the sequence number of the 
+                # current note, then add it to the tab
+                if term.number == counter:
+                    tab[key].append(f"{term.position}-")
+                    # add -'s to every other string
+                    for otherkey in keys:
+                        if key != otherkey:
+                            tab[otherkey].append("--"*len(str(term.position))) # * len(str(position)) part makes
+                            #                                                     it so stuff aligns when you put
+                            #                                                     a double digit fret
+                    # move onto next note in sequence
+                    counter += 1
+                else:
+                    tab[key].append("-")
+    print(f"Counter = {counter}")
+
     # actually print the tab
     tab_string = "" 
     for key in tab:

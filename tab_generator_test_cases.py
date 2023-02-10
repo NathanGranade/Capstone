@@ -130,6 +130,7 @@ notes = [
     tab_generator.Note("C", 0),
     tab_generator.Note("A", 0)
 ]
+"""
 positions = []
 counter = 1
 for note in notes:
@@ -163,13 +164,92 @@ for key in tablature.keys():
 
 input("Test Complete: generate tab for song played using more than one string (マキシマムザホルモン　ー　ビキニスポツポンチ)\nPress ENTER to start next test.")
 os.system("cls")
+"""
+notes = [
+    
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("F", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("F", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("F", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("F", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("F", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("F", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 2),
+    tab_generator.Note("B", 1),
+    tab_generator.Note("E", 1),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("G#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("A#", 0),
+    tab_generator.Note("A", 0),
+    tab_generator.Note("E", 0),
+    tab_generator.Note("G", 0),
+    tab_generator.Note("C", 0),
+    tab_generator.Note("A", 0)
+]
+start = 0
+end = 12
+while end < len(notes):
+    bikini_sports_ponchin_tab_dictionary = tab_generator.generate_tab_dictionary(notes[start:end])
+    bikini_sports_ponchin_tab = tab_generator.generate_tab(bikini_sports_ponchin_tab_dictionary)
+    print(bikini_sports_ponchin_tab)
+    start = end
+    end += 20
 
-bikini_sports_ponchin_tab_dictionary = tab_generator.generate_tab_dictionary(notes)
-print("dictionary created:\n")
-
-print(bikini_sports_ponchin_tab_dictionary)
+bikini_sports_ponchin_tab_dictionary = tab_generator.generate_tab_dictionary(notes[end:])
 bikini_sports_ponchin_tab = tab_generator.generate_tab(bikini_sports_ponchin_tab_dictionary)
 print(bikini_sports_ponchin_tab)
+
 print("tab created")
 
 input("Test Complete: generate_tab_dictionary and generate_tab method in conjunction\nPress ENTER to start next test.")
