@@ -222,8 +222,34 @@ CIRCLE_OF_FIFTHS = [
                    "Bb", 
                    "F"]
 
+def vertical_distance(position1, position2):
+    """
+    Returns the vertical distance (how many strings away) this note is from another note on the fretboard. 
+    Useful for determining whether or not it is worth it to jump X amount of strings to decrease
+    horizontal movement space, or to jump Y amount of strings with greater horizontal movement space,
+    where X > Y.
+    
+    keyword arguments
+    position1 -- an instance of the FretboardPosition class
+    position2 -- an instance of the FretboardPosition class
+    """
+    if position1.string > position2.string:
+        return(position1.string - position2.string)
+    elif position1.string < position2.string:
+        return(position2.string - position1.string)
+    else:
+        return(0)
+
 def lateral_fretboard_distance(position1, position2):
-    """returns the lateral distance (how many frets away) this note is from another note on the fretboard. Used to determine whether or not the note should be on the same string, or a different string. E.g. it is extremely difficult to go from the 3rd fret to the 9th fret on the E string, so it would be better to play the 3rd fret on the E string, then the 4th fret on the A string."""
+    """
+    Returns the lateral distance (how many frets away) this note is from another note on the fretboard. 
+    Used to determine whether or not the note should be on the same string, or a different string. 
+    E.g. it is extremely difficult to go from the 3rd fret to the 9th fret on the E string, so it would be better to play the 3rd fret on the E string, then the 4th fret on the A string.
+    
+    keyword arguments
+    position1 -- an instance of the FretboardPosition class
+    position2 -- an instance of the FretboardPosition class
+    """
     if position1.fret > position2.fret:
         return(position1.fret - position2.fret)
     elif position1.fret < position2.fret:
@@ -286,25 +312,35 @@ def get_best_next_position(previous, options):
     open_option = get_open_option(str(corresponding_note))
     same_string_options = get_same_string_options(str(corresponding_note), previous.string)
     
+    # if the note can be played open (0th fret), on the same string 
+    # as the previous note, play openly.
     if open_option != None:
         if previous.string == open_option.string:
             return(open_option)
     
     for option in same_string_options:
+        # if you can play the note on the same string as the
+        # previous note and the previous note was played openly
+        # then play it on the same string, regardless of distance
         if previous.fret == 0:
             return(option)
         
+        # if previous note was not played on open string
+        # then still prefer the same string, so long as it is
+        # not too far away (5+ frets away)
         if lateral_fretboard_distance(previous, option) < 5:
             return(option)
     
-    if (options[0].string == previous.string) and lateral_fretboard_distance(options[0], previous) < 5:
-        return(options[0])
-    else:
-        # smallest distance
-        smallest_distance = min(lateral_distances)
-        smallest_distance_index = lateral_distances.index(smallest_distance)
-        nearest = options[smallest_distance_index]
-        return(nearest)
+    if 
+    #if (options[0].string == previous.string) and lateral_fretboard_distance(options[0], previous) < 5:
+        #return(options[0])
+    #else:
+    # if none of the other heuristics apply, then
+    # return the smallest distance
+    smallest_distance = min(lateral_distances)
+    smallest_distance_index = lateral_distances.index(smallest_distance)
+    nearest = options[smallest_distance_index]
+    return(nearest)
             
 # prototype new version that takes into account the NEXT note as well
 # before assigning the current note.
