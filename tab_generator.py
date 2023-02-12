@@ -222,7 +222,7 @@ CIRCLE_OF_FIFTHS = [
                    "Bb", 
                    "F"]
 
-def vertical_distance(position1, position2):
+def get_vertical_distance(position1, position2):
     """
     Returns the vertical distance (how many strings away) this note is from another note on the fretboard. 
     Useful for determining whether or not it is worth it to jump X amount of strings to decrease
@@ -299,16 +299,18 @@ def get_open_option(note: str):
     # otherwise, return None
     return(None)
 
-def get_best_next_position(previous, options):
+def get_best_next_position(previous, options, track):
     lateral_distances = []
+    vertical_distances = []
     
     # get the lateral distance of every position on the fretboard that plays the note that comes after the "previous" argument
     for option in options:
         lateral_distance = lateral_fretboard_distance(previous, option)
+        vertical_distance = get_vertical_distance(previous, option)
         lateral_distances.append(lateral_distance)
-    #print(lateral_distances)
+        vertical_distances.append(vertical_distance)
     
-    corresponding_note = get_corresponding_note(options[0])
+    corresponding_note = get_corresponding_note(options[0]) # use [0] because it does not matter as they are all the same note
     open_option = get_open_option(str(corresponding_note))
     same_string_options = get_same_string_options(str(corresponding_note), previous.string)
     
@@ -331,7 +333,22 @@ def get_best_next_position(previous, options):
         if lateral_fretboard_distance(previous, option) < 5:
             return(option)
     
-    if 
+    
+    if previous.fret == 0:
+        previous_previous_note = track[len(track)-2]
+        sorted_vertical_distances = vertical_distances.sort()
+        minimum_vertical_distance = min(vertical_distances)
+        minimum_string_skipping_position_index = vertical_distances.index(minimum_vertical_distance)
+        minimum_string_skipping_position = options[minimum_string_skipping_position_index]
+        if lateral_fretboard_distance(minimum_string_skipping_position, previous_previous_note) > 2:
+            try:
+                second_minimum_string_skipping_position_index = vertical_distances.index(sorted_vertical_distances[1])
+                second_minimum_string_skipping_position = options[second_minimum_string_skipping_position_index]
+                return(second_minimum_string_skipping_position)
+            except:    
+                pass
+        return(minimum_string_skipping_position)
+            
     #if (options[0].string == previous.string) and lateral_fretboard_distance(options[0], previous) < 5:
         #return(options[0])
     #else:
@@ -391,22 +408,6 @@ def get_best_next_position_neo(previous, subsequent, options):
     return(candidates)
     """
         
-"""
-def note_to_fret(note, previous = None):
-    # previous argument is if you want the placement of the note to be contextual. For example, if the previous note is the 3rd fret on the E string, then the next note should not be the 11th fret on the E string, as this will be hard to reach. It should instead then be the 6th fret on the A string
-    if previous == None:
-        if note in TAB_MAP:
-            return TAB_MAP[note]
-        else:
-            print("Error: note is not in tablature map (you need to update it)")
-    else:
-        if note in TAB_MAP and previous in TAB_MAP:
-           # later add code to ensure that the  
-           
-        else:
-            print("Erorr: the note is not in the tablature map (you need to update it)")
-"""
-
 def determine_tuning(notes: list):
     """
     Determines the tuning the guitar should be in, based on the lowest played note.
@@ -617,7 +618,7 @@ def generate_tab_dictionary(notes):
     for x in range(1, len(notes)):
         note = notes[x]
         options = TAB_MAP[str(note)]
-        easiest = get_best_next_position(previous, options)
+        easiest = get_best_next_position(previous, options, positions)
         positions.append(easiest)
         previous = easiest
     
