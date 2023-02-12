@@ -145,7 +145,7 @@ TAB_MAP = {
         
         
         # One octave up Low E String                A String                  D String                  G String                  B String                 High E String
-        str(Note("E", 1)) :  [FretboardPosition(6, 12), FretboardPosition(5, 7),  FretboardPosition(4, 2)],
+        str(Note("E", 1)) :  [FretboardPosition(5, 7),  FretboardPosition(6, 12),  FretboardPosition(4, 2)],
         str(Note("F", 1)) :  [FretboardPosition(6, 13), FretboardPosition(5, 8),  FretboardPosition(4, 3)],
         str(Note("F#", 1)) : [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
         str(Note("Gb", 1)) : [FretboardPosition(6, 14), FretboardPosition(5, 9),  FretboardPosition(4, 4)],
@@ -153,8 +153,8 @@ TAB_MAP = {
         str(Note("G#", 1)) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
         str(Note("Ab", 1)) : [FretboardPosition(6, 16), FretboardPosition(5, 11), FretboardPosition(4, 6),  FretboardPosition(3, 1)],
         str(Note("A", 1)) :  [FretboardPosition(6, 17), FretboardPosition(5, 12), FretboardPosition(4, 7),  FretboardPosition(3, 2)],
-        str(Note("A#", 1)) :  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
-        str(Note("Bb", 1)) :  [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
+        str(Note("A#", 1)) : [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
+        str(Note("Bb", 1)) : [FretboardPosition(6, 18), FretboardPosition(5, 13), FretboardPosition(4, 8),  FretboardPosition(3, 3)],
         str(Note("B", 1)) :  [FretboardPosition(6, 19), FretboardPosition(5, 14), FretboardPosition(4, 9),  FretboardPosition(3, 4), FretboardPosition(2, 0)],
         str(Note("C", 1)) :  [FretboardPosition(6, 20), FretboardPosition(5, 15), FretboardPosition(4, 10), FretboardPosition(3, 5), FretboardPosition(2, 1)],
         str(Note("C#", 1)) : [FretboardPosition(6, 21), FretboardPosition(5, 16), FretboardPosition(4, 11), FretboardPosition(3, 6), FretboardPosition(2, 2)],
@@ -231,14 +231,71 @@ def lateral_fretboard_distance(position1, position2):
     else:
         return(0)
 
+def get_same_string_options(note: str, string: int):
+    """
+    Returns a list of FretboardPosition instances, where each instance has the same string attribute as the string argument.
+    
+    keyword arguments
+    note -- string representation of a note instance
+    string -- integer corresponding to one of the 6 strings
+    """
+    keys = TAB_MAP.keys()
+    if note in keys:
+        options = TAB_MAP[note]
+    else:
+        return([])
+    same_string_options = []
+    for option in options:
+        if option.string == string:
+            same_string_options.append(option)
+    return(same_string_options)
+
+def get_open_option(note: str):
+    """
+    Given a note, returns a FretboardPosition instance if it can be played on one of the strings openly (0th fret)
+    and returns None otherwise
+    
+    keyword arguments
+    note -- string representation of a Note instance.
+    """
+    keys = TAB_MAP.keys()
+    
+    # case: invalid note passed
+    if not note in keys:
+        return(None)
+    
+    # if an option is found that is played on the 0th fret, return that option
+    options = TAB_MAP[note]
+    for option in options:
+        if option.fret == 0:
+            return(option)
+    
+    # otherwise, return None
+    return(None)
 
 def get_best_next_position(previous, options):
     lateral_distances = []
+    
     # get the lateral distance of every position on the fretboard that plays the note that comes after the "previous" argument
     for option in options:
         lateral_distance = lateral_fretboard_distance(previous, option)
         lateral_distances.append(lateral_distance)
     #print(lateral_distances)
+    
+    corresponding_note = get_corresponding_note(options[0])
+    open_option = get_open_option(str(corresponding_note))
+    same_string_options = get_same_string_options(str(corresponding_note), previous.string)
+    
+    if open_option != None:
+        if previous.string == open_option.string:
+            return(open_option)
+    
+    for option in same_string_options:
+        if previous.fret == 0:
+            return(option)
+        
+        if lateral_fretboard_distance(previous, option) < 5:
+            return(option)
     
     if (options[0].string == previous.string) and lateral_fretboard_distance(options[0], previous) < 5:
         return(options[0])
@@ -248,7 +305,45 @@ def get_best_next_position(previous, options):
         smallest_distance_index = lateral_distances.index(smallest_distance)
         nearest = options[smallest_distance_index]
         return(nearest)
+            
+# prototype new version that takes into account the NEXT note as well
+# before assigning the current note.
+def get_best_next_position_neo(previous, subsequent, options): 
+    """
+    Returns an instance of the FretboardPosition class corresponding to the best way to play a note, given the context of what was played before and what will be played next.
     
+    keyword arguments:
+    previous -- an instance of the FretboardPosition class, corresponding to the previously played note
+    subsequent -- string representation of the next note to be played 
+    options -- list of FretboardPosition instances corresponding to ways to play the current note
+    """
+    previous_lateral_distances = []
+    subsequent_lateral_distances = [] # "next" was not used for the keyword, as it is a reserved word
+    
+    # get the lateral distance of every position on the fretboard that plays the note that comes after the "previous" argument
+    for option in options:
+        previous_lateral_distance = lateral_fretboard_distance(previous, option)
+        previous_lateral_distances.append(previous_lateral_distance)
+    #print(lateral_distances)
+    
+    if not subsequent in [None, ""]:
+        # get the lateral distance of every position on the fretboard that plays the note that comes after the "subsequent" argument
+        subsequent_options = TAB_MAP[subsequent]
+        for option in subsequent_options:
+            subsequent_lateral_distance = lateral_fretboard_distance(subsequent, option)
+            subsequent_lateral_distances.append(lateral_distance)
+    
+    if (options[0].string == previous.string) and (lateral_fretboard_distance(options[0], previous) < 5):
+        if subsequent != None:
+            if lateral_fretboard_distance(options[0], subsequent) < 5:
+                return(options[0])
+    else:
+        # smallest distance
+        smallest_distance = min(lateral_distances)
+        smallest_distance_index = lateral_distances.index(smallest_distance)
+        nearest = options[smallest_distance_index]
+        return(nearest)
+
     # filter the positions based on whether or not they are too far away (distance = 6+)
     """
     candidates = []
@@ -473,9 +568,12 @@ def generate_tab_dictionary(notes):
     # so it can determine the what the next best note to play is, but if we are
     # on the first note, then there is nothing to reference, so manually insert
     # the first note, always.
-    first = TAB_MAP[str(notes[0])][0] # final [0] prefers the 6th string over others
-    positions.append(first)
-    previous = first
+    try:
+        first = TAB_MAP[str(notes[0])][0] # final [0] prefers the 6th string over others
+        positions.append(first)
+        previous = first
+    except:
+        print("No first note can be added")
     
     # for every other note, determine what position is the easiest way
     # to play the note, given the context of what was just played previously.
