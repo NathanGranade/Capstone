@@ -303,7 +303,7 @@ def get_best_next_position(previous, options, track):
     lateral_distances = []
     vertical_distances = []
     
-    # get the lateral distance of every position on the fretboard that plays the note that comes after the "previous" argument
+    # get the lateral and vertical distance of every position on the fretboard that plays the note that comes after the "previous" argument
     for option in options:
         lateral_distance = lateral_fretboard_distance(previous, option)
         vertical_distance = get_vertical_distance(previous, option)
@@ -333,13 +333,21 @@ def get_best_next_position(previous, options, track):
         if lateral_fretboard_distance(previous, option) < 5:
             return(option)
     
-    
+    # if the previously played note was played on an open string,
+    # then you can be more liberal with the positioning of the next note
+    # as your hand comes off the fretboard entirely.
+    # The rule here is to minimize vertical distance (string skipping)
+    # unless, you can skip 1 extra string to play the same note, and minimize horizontal distance
     if previous.fret == 0:
         previous_previous_note = track[len(track)-2]
         sorted_vertical_distances = vertical_distances.sort()
         minimum_vertical_distance = min(vertical_distances)
         minimum_string_skipping_position_index = vertical_distances.index(minimum_vertical_distance)
         minimum_string_skipping_position = options[minimum_string_skipping_position_index]
+        # try to minimize horizontal distance by considering
+        #   1. the note played before the open note
+        #   2. if you do less horizontal movement relative to that
+        #      note that came before the open note, by skipping 1 extra string
         if lateral_fretboard_distance(minimum_string_skipping_position, previous_previous_note) > 2:
             try:
                 second_minimum_string_skipping_position_index = vertical_distances.index(sorted_vertical_distances[1])
@@ -347,11 +355,9 @@ def get_best_next_position(previous, options, track):
                 return(second_minimum_string_skipping_position)
             except:    
                 pass
+        # otherwise, return the position that minimizes string skipping
         return(minimum_string_skipping_position)
-            
-    #if (options[0].string == previous.string) and lateral_fretboard_distance(options[0], previous) < 5:
-        #return(options[0])
-    #else:
+    
     # if none of the other heuristics apply, then
     # return the smallest distance
     smallest_distance = min(lateral_distances)
