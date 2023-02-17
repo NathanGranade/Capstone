@@ -587,7 +587,10 @@ def parse_transcriber_note(note: str):
     keyword arguments
     note -- string representation of the note as they are provided by the transcriber application
     """
-    note_name = note[:len(note)]
+    if "#" in note:
+        note_name = note[0:2]
+    else:
+        note_name = note[0]
     
     # last character is always a number corresponding to the octave
     octave = int(note[len(note)-1]) 
@@ -684,8 +687,10 @@ def generate_tab(tab_dictionary):
                             #                                                     a double digit fret
                     # move onto next note in sequence
                     counter += 1
-                else:
-                    tab[key].append("-")
+                # removing this fixed the problem with causing the tablature
+                # to become misaligned as it grows longer
+                #else:
+                    #tab[key].append("-")
     print(f"Counter = {counter}")
 
     # actually print the tab
