@@ -31,6 +31,27 @@ app.config['MYSQL_DB'] = "sql9591604"
 
 mysql = MySQL(app)
 
+def solve(password):
+      a=0
+      b=0
+      c=0
+      d=0
+      if len(password)<8 or len(password)>20:
+         return False
+      for i in password:
+         if i.isupper():
+            a+=1
+         elif i.islower():
+            b+=1
+         elif i in '"!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"':
+            c+=1
+         elif i.isdigit():
+            d+=1
+      if a>=1 and b>=1 and c>=1 and d>=1 and a+b+c+d==len(password):
+        return 1
+      else:
+         return 0
+
 @app.route('/form')
 def form():
     return render_template('form.html')
@@ -90,6 +111,9 @@ def login():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
+        validPW = solve(password)
+        if validPW == 0:
+            return render_template('login.html', d = "Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters.")
         idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
