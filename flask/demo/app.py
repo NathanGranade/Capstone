@@ -45,7 +45,7 @@ def upload():
         songnotes = Tscript
         songID = random.randrange(1000)
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO Transcriptions (Notes, SongID) VALUES(%s,%s)''',(songnotes, songID))
+        cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
     return render_template('app.html')
@@ -74,7 +74,7 @@ def search():
         if request.method == 'POST':
             songID = request.form['songID']
             cursor = mysql.connection.cursor()
-            cursor.execute('''SELECT * from Transcriptions WHERE songID = (%s)''',(songID))
+            cursor.execute('''SELECT * from Tabs WHERE songID = (%s)''',(songID))
             data = cursor.fetchone()
             mysql.connection.commit()
             session["var"] = songID
