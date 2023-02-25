@@ -72,7 +72,7 @@ def search():
             return render_template('search.html')
 
         if request.method == 'POST':
-            songID = request.form['songID']
+            songID = request.form['SongID']
             cursor = mysql.connection.cursor()
             cursor.execute('''SELECT * from Tabs WHERE idSong = (%s)''',(songID))
             data = cursor.fetchone()
