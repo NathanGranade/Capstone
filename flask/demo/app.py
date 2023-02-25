@@ -9,7 +9,7 @@ import MySQLdb
 
 import os
 
-from transcriber import transcribe
+import extractNotes
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -40,7 +40,10 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-        Tscript = transcribe(f.filename)
+
+        notes = extractNotes.midiConvert(f.filename)
+        Tscript = extractNotes.run(notes)
+
         session["var"] = Tscript
         songnotes = Tscript
         songID = random.randrange(1000)
@@ -54,6 +57,8 @@ def upload():
 def display():
         if "var" in session:
             var = session["var"]
+            #with open('tab.txt', 'r') as f: 
+                #return render_template('display.html', var=f.read())
             return render_template('display.html', var = var)
         else:
             return render_template('display.html', var ='no data in session')
