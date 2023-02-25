@@ -74,7 +74,7 @@ def search():
         if request.method == 'POST':
             songID = request.form['songID']
             cursor = mysql.connection.cursor()
-            cursor.execute('''SELECT * from Tabs WHERE songID = (%s)''',(songID))
+            cursor.execute('''SELECT * from Tabs WHERE idSong = (%s)''',(songID))
             data = cursor.fetchone()
             mysql.connection.commit()
             session["var"] = songID
