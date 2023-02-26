@@ -15,9 +15,9 @@ def midiConvert(AUDIO_FILE):
     if AUDIO_FILE == "" :
         return []
     if isinstance(AUDIO_FILE, str) == False:
-        return "Input is not String! Enter file name as string"
+        return "ERROR: Input is not String! Enter file name as string"
     if AUDIO_FILE[-4:] != '.mid':
-        return "Incorrect file type! This program accepts files of .wav format."
+        return "ERROR: Incorrect file type! This program accepts files of .midi format."
     l = []
     midi_data = pretty_midi.PrettyMIDI(AUDIO_FILE)
     print("duration:",midi_data.get_end_time())
@@ -43,7 +43,10 @@ def midiConvert(AUDIO_FILE):
 
 def run(filepath):
     print(filepath)
-    return os.system("python tab_generator_interface.py {}".format(filepath) )
+    if filepath.startswith("ERROR: "):
+         return False
+    else:
+        return os.system("python tab_generator_interface.py {}".format(filepath) )
 
     
 
