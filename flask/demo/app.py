@@ -57,9 +57,8 @@ def upload():
 def display():
         if "var" in session:
             var = session["var"]
-            #with open('tab.txt', 'r') as f: 
-                #return render_template('display.html', var=f.read())
-            return render_template('display.html', var = var)
+            with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+                return render_template('display.html', var=f.read())
         else:
             return render_template('display.html', var ='no data in session')
 

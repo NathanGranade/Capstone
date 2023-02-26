@@ -28,9 +28,9 @@ def midiConvert(AUDIO_FILE):
         for note in instrument.notes:
             l.append(note.pitch)
     #print(l)
-    filepath = os.path.join('flask/demo/RawNotes', 'RawNotes.txt')
-    if not os.path.exists('flask/demo/RawNotes'):
-        os.makedirs('flask/demo/RawNotes')
+    filepath = os.path.join('RawNotes', 'RawNotes.txt')
+    if not os.path.exists('RawNotes'):
+        os.makedirs('RawNotes')
     file = open(filepath, "+w")
     for item in l:
         if item in Notes:
@@ -40,6 +40,7 @@ def midiConvert(AUDIO_FILE):
             pass
     
     return filepath
+
 def run(filepath):
     print(filepath)
     return os.system("python tab_generator_interface.py {}".format(filepath) )
