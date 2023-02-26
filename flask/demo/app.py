@@ -9,7 +9,7 @@ import MySQLdb
 
 import os
 
-from transcriber import transcribe
+import extractNotes
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -83,12 +83,15 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-        Tscript = transcribe(f.filename)
+
+        notes = extractNotes.midiConvert(f.filename)
+        Tscript = extractNotes.run(notes)
+
         session["var"] = Tscript
         songnotes = Tscript
         songID = random.randrange(1000)
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO Transcriptions (Notes, SongID) VALUES(%s,%s)''',(songnotes, songID))
+        cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
     return render_template('app.html')
@@ -97,7 +100,8 @@ def upload():
 def display():
         if "var" in session:
             var = session["var"]
-            return render_template('display.html', var = var)
+            with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+                return render_template('display.html', var=f.read())
         else:
             return render_template('display.html', var ='no data in session')
 
@@ -115,9 +119,9 @@ def search():
             return render_template('search.html')
 
         if request.method == 'POST':
-            songID = request.form['songID']
+            songID = request.form['SongID']
             cursor = mysql.connection.cursor()
-            cursor.execute('''SELECT * from Transcriptions WHERE songID = (%s)''',(songID))
+            cursor.execute('''SELECT * from Tabs WHERE idSong = (%s)''',(songID))
             data = cursor.fetchone()
             mysql.connection.commit()
             session["var"] = songID
