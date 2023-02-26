@@ -11,13 +11,15 @@ def automatedTest():
     time.sleep(5)
     button.click()
     time.sleep(5)
-
+    
     email = browser.find_element("id", "email")
+    
+
     email.send_keys("DEMO@gmail.com")
     username = browser.find_element("id", "username")
-    username.send_keys("DEMO")
+    username.send_keys("DEMO1234")
     password = browser.find_element("id","password")
-    password.send_keys("ThIsIsADemOPassWord")
+    password.send_keys("ThIsIsDemOPAss^23*")
     time.sleep(5)
     submit = browser.find_element("id", "submit")
     submit.click()
@@ -25,7 +27,8 @@ def automatedTest():
     search_text = "USER REGISTERED"
     time.sleep(5)
     print(search_text in source)
-    return "Test Passed!"
+
+    return ""
 
 if __name__ == '__main__':
     print(automatedTest())
