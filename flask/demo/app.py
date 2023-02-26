@@ -101,11 +101,8 @@ def display():
         if "var" in session:
             var = session["var"]
             print (var)
-            if var == False:
-                return render_template('display.html', var="Error")
-            else:
-                with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
-                    return render_template('display.html', var=f.read())
+            with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+                return render_template('display.html', var=f.read())
         else:
             return render_template('display.html', var ='no data in session')
 

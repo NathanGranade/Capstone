@@ -43,10 +43,7 @@ def midiConvert(AUDIO_FILE):
 
 def run(filepath):
     print(filepath)
-    if filepath.startswith("ERROR: "):
-         return False
-    else:
-        return os.system("python tab_generator_interface.py {}".format(filepath) )
+    return os.system("python tab_generator_interface.py {}".format(filepath) )
 
     
 
