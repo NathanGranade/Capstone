@@ -24,7 +24,9 @@ app.config.update(
 )
 
 dropzone = Dropzone(app)
-    
+app.config['DROPZONE_MAX_FILES'] = 1
+app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
+app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.mid, .wav'
 app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
 app.config['MYSQL_USER'] = "sql9591604"
 app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
