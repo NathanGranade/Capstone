@@ -1,33 +1,11 @@
 WHOLE_STEPS = ["A", "B", "C", "D", "E", "F", "G"]
 
-TUNINGS = {
-        # NOTE: 7 and 8 string guitar tunings can be created by simply appending extended range to existing 6 string tuning; for example, B standard (7 string) = ["B"] + TUNINGS["E standard"] 
-
-        # 6 String standard tunings
-        "E standard": ["E", "A", "D", "G", "B", "E"],
-        # Eb standard is the same as D# standard
-        "Eb standard" : ["Eb", "Ab", "Db", "Gb", "Bb", "Eb"], 
-        "D standard" : ["D", "G", "C", "F", "A", "D"],
-        # C# standard is the same as Db standard
-        "C# standard": ["C#", "F#", "B", "E", "G#", "C#"],
-        "C standard" : ["C", "F", "A#", "D#", "G", "C"],
-        "B standard" : ["B", "E", "A", "D", "G", "B"],
-        "A standard" : ["A", "D", "G", "C", "E", "A"],
-        
-        # 6 string drop tunings
-        "Drop D": ["D", "A", "D", "G", "B", "E"],
-        "Drop C#": ["C#", "G#", "C#", "F#", "A#", "D#"],
-        "Drop C": ["C", "G", "C", "F", "A", "D"],
-        "Drop B": ["B", "F#", "B", "E", "G#", "C#"],
-        "Drop A": ["A", "E", "A", "D", "G", "B"]
-        }
-
 class Note:
     def __init__(self, note: str, octave: int):
         self.note = note
         # E standard tuning is used as reference for octave = 0; therefore:
         # E, 0 -> open E (6th string)
-        #   E, -1 open E on 8th string
+        # E, -1 open E on 8th string
         # A, 0 -> open A, or 5th fret of E
         # D, 0 -> open D (4th string)
         # G, 0 -> open G (3rd string)
@@ -206,6 +184,26 @@ TAB_MAP = {
         
         }
 
+TUNINGS = {
+        # NOTE: 7 and 8 string guitar tunings can be created by simply appending extended range to existing 6 string tuning; for example, B standard (7 string) = ["B"] + TUNINGS["E standard"] 
+
+        # 6 String standard tunings
+        "E standard": [],
+        "Eb standard" : ["Eb", "Ab", "Db", "Gb", "Bb", "Eb"], 
+        "Drop D": ["D", "A", "D", "G", "B", "E"],
+        
+        "D standard" : ["D", "G", "C", "F", "A", "D"],
+        "C# standard": ["C#", "F#", "B", "E", "G#", "C#"],
+        "Drop C#": ["C#", "G#", "C#", "F#", "A#", "D#"],
+        "Drop C": ["C", "G", "C", "F", "A", "D"],
+        
+        "C standard" : ["C", "F", "A#", "D#", "G", "C"],
+        "Drop B": ["B", "F#", "B", "E", "G#", "C#"],
+        "B standard" : ["B", "E", "A", "D", "G", "B", "E"],
+        
+        "Drop A": ["A", "E", "A", "D", "G", "B"],
+        "A standard" : ["A", "D", "G", "C", "E", "A"],
+        }
 
 NOTES = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 CIRCLE_OF_FIFTHS = [
@@ -413,28 +411,32 @@ def get_best_next_position_neo(previous, subsequent, options):
     
     return(candidates)
     """
-        
-def determine_tuning(notes: list):
+
+def notes_are_in_tuning(notes, tuning, name):
+    print(f"Tuning is: {name}")
+    for note in notes:
+        if not note in tuning:
+            print(f"{str(note)} is not in {name} {[str(note) for note in tuning]}")
+            return(False)
+    return(True)
+
+# To determine the tuning that the song should be played in:
+#   1. look at all known tunings
+#   2. look at every note in the sequence
+#   3. compare against tuning
+#       1. if every note is in the tuning, return this tuning
+#       2. otherwise, continue through the tunings
+def determine_tuning(notes, tunings):
     """
     Determines the tuning the guitar should be in, based on the lowest played note.
     """
     decision = None
-    lowest_octave = 0
-    for note in notes:
-        if note.octave < lowest_octave:
-            lowest_octave = note.octave
-
-    candidates = []
-    for note in notes:
-        if note.octave == lowest_octave:
-            candidates.append(note)
-    
-    # still working this out
-    # started this method really quick while i had some time before going to the gym 
-    for tuning in TUNINGS:
-        if tuning[0] in candidates:
-            decision = tuning
-    return tuning
+    for tuning in tunings:
+        if notes_are_in_tuning(notes, tunings[tuning], tuning):
+            return(tuning)    
+    return(None)
+        
+        
 
 def transpose_fretboard_position(note, level: int):
     """
