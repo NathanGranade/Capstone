@@ -156,6 +156,24 @@ def login():
     else:
         return render_template('login.html', d = "Please fill out all forums.")
 
+@app.route('/contact', methods = ['POST', 'GET'])
+def contact():
+    if request.method == 'GET':
+        return render_template('contact.html')
+    
+    if request.method == 'POST':
+        email = request.form['email']
+        name = request.form['name']
+        message = request.form['message'] 
+        validEmail = validateEmail(email)
+        if validEmail == 0:
+            return render_template('contact.html', d = "Please input a valid email address.")
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO Feedback (email,name,message) VALUES(%s,%s,%s)''',(email,name,message))
+        mysql.connection.commit()
+        cursor.close()
+        if email and name and message:
+            return render_template('login.html', d = "Feedback received")
 
 if __name__ == '__main__':
     app.run(debug = True, port = 8000)
