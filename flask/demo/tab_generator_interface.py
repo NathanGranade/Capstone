@@ -1,7 +1,10 @@
 from sys import argv
 import tab_generator
+from tunings import generate_tunings_map
 
 argc = len(argv)
+
+
 
 def generate_output_filename(input_name: str):
     split_name = input_name.split(".")
@@ -54,38 +57,43 @@ def get_batch(notes):
         remainder = []
     return(segment, remainder)
 
-DEBUG = False
+DEBUG = True
 
 if argc > 1:
-    for arg in argv[1:]:
-        # read the contents of the file passed to the program
-        # this file should contain note representations
-        notes = read_notes(arg)
-        if DEBUG:
+   with open(f"RawNotes/RawNotes-tab.txt", "w") as f:
+        for arg in argv[1:]:
+            # read the contents of the file passed to the program
+            # this file should contain note representations
+            notes = read_notes(arg)
             print(notes)
-        
-        # the format of notes in the notes list should be for
-        # the transcriber, which is not how notes are represented
-        # by the tab generator. So convert the notes to the
-        # internal representation of the generator, using the
-        # parse_transcriber_note method
-        generator_compatible_notes = []
-        for note in notes:
-            generator_compatible_notes.append(tab_generator.parse_transcriber_note(note))
-        if DEBUG:
-            for note in generator_compatible_notes:
-                print(str(note))
-        # generate several tab_dictionary instances containing at most
-        # 15 notes so as to make the overall tab broken up into small
-        # and easily digestable segments, like how a human would write
-        # a tab
-        output_file_name = generate_output_filename(arg)
-        print(output_file_name)
-        output_file = open(f"{output_file_name}-tab.txt", "a")
-        while len(generator_compatible_notes) > 0:
-            segment, generator_compatible_notes = get_batch(generator_compatible_notes)
-            tab_dictionary = tab_generator.generate_tab_dictionary(segment)
-            tab = tab_generator.generate_tab(tab_dictionary)
-            #print(f"{tab}\n")
-            output_file.write(f"{tab}\n")
-        output_file.close()
+            if DEBUG:
+                print(notes)
+            
+            # the format of notes in the notes list should be for
+            # the transcriber, which is not how notes are represented
+            # by the tab generator. So convert the notes to the
+            # internal representation of the generator, using the
+            # parse_transcriber_note method
+            generator_compatible_notes = []
+            for note in notes:
+                generator_compatible_notes.append(tab_generator.parse_transcriber_note_neo(note))
+            if DEBUG:
+                for note in generator_compatible_notes:
+                    print(str(note))
+            
+            # determine the tuning of the song
+            tunings = generate_tunings_map()
+            tuning = tab_generator.determine_tuning(generator_compatible_notes, tunings)
+            print(f"Tuning is {tuning}")
+            
+            # generate several tab_dictionary instances containing at most
+            # 15 notes so as to make the overall tab broken up into small
+            # and easily digestable segments, like how a human would write
+            # a tab
+            while len(generator_compatible_notes) > 0:
+                segment, generator_compatible_notes = get_batch(generator_compatible_notes)
+                tab_dictionary = tab_generator.generate_tab_dictionary(segment, tuning)
+                tab = tab_generator.generate_tab(tab_dictionary, tuning)
+                #print(f"{tab}\n")
+                f.write(f"{tab}\n")
+            f.close()

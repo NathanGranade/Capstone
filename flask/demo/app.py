@@ -6,6 +6,7 @@ from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 import random
 import MySQLdb
+import bcrypt
 
 import os
 
@@ -23,7 +24,9 @@ app.config.update(
 )
 
 dropzone = Dropzone(app)
-    
+app.config['DROPZONE_MAX_FILES'] = 1
+app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
+app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.mid, .wav'
 app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
 app.config['MYSQL_USER'] = "sql9591604"
 app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
@@ -100,6 +103,7 @@ def upload():
 def display():
         if "var" in session:
             var = session["var"]
+            print (var)
             with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
                 return render_template('display.html', var=f.read())
         else:
@@ -137,6 +141,8 @@ def login():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password.encode('utf8'), salt)
         validPW = validatepw(password)
         if validPW == 0:
             return render_template('login.html', d = "Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters.")
@@ -148,7 +154,7 @@ def login():
             return render_template('login.html', d = "Please input a valid username. A valid username is at least 8 characters and contains no special characters.")
         idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
+        cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,hashed,idUser))
         mysql.connection.commit()
         cursor.close()
     if email and username and password:
