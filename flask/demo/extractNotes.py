@@ -43,7 +43,7 @@ def midiConvert(AUDIO_FILE):
 
 def run(filepath):
     print(filepath)
-    return os.system("python tab_generator_interface.py {}".format(filepath) )
+    return os.system("python tab_generator_interface.py generate_tab {}".format(filepath) )
 
     
 
