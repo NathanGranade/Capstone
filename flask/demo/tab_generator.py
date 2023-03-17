@@ -1,3 +1,4 @@
+import copy
 STRINGS_FOR_TUNINGS = {
     "E standard"  : {6 : "E",  5 : "A",  4 : "D",  3 : "G",  2 : "B",  1 : "e"},
     "Eb standard" : {6 : "Eb", 5 : "Ab", 4 : "Db", 3 : "Gb", 2 : "Bb", 1 : "eb"},
@@ -13,7 +14,10 @@ STRINGS_FOR_TUNINGS = {
     "A# standard" : {7 : "A#", 6 : "D#", 5 : "G#", 4 : "C#", 3 : "F#", 2 : "A#",  1 : "D#"},
     "Drop A"      : {7 : "A",  6 : "E",  5 : "A",  4 : "D",  3 : "G",  2 : "B",   1 : "E"}
 }
-
+# list of extended tunings to forcefully filter out 
+# 7th and 8 string FretboardPosition options in
+# get_best_next_position() method
+EXTENDED_TUNINGS = ["B standard", "Drop A"]
 WHOLE_STEPS = ["A", "B", "C", "D", "E", "F", "G"]
 
 # if tuning is found to be lower than E standard, then
@@ -125,7 +129,6 @@ class Chord:
     def __init__(self, notes: list):
         self.notes = notes
 
-
 class PowerChord(Chord):
     def __init__(self, root):
         self.notes = [root]
@@ -201,14 +204,14 @@ TAB_MAP = {
         str(Note("A", 1)) :  [FretboardPosition(7, -2)],
         str(Note("A#", 1)) : [FretboardPosition(7, -1)],
         str(Note("B", 1)) :  [FretboardPosition(7, 0)],
-        str(Note("C", 2)) :  [FretboardPosition(6, -4), FretboardPosition(7, 1)],
-        str(Note("C#", 2)) : [FretboardPosition(6, -3), FretboardPosition(7, 2)],
-        str(Note("Db", 2)) : [FretboardPosition(6, -3), FretboardPosition(7, 2)],
-        str(Note("D", 2)) :  [FretboardPosition(6, -2), FretboardPosition(7, 3)],
+        str(Note("C", 2)) :  [FretboardPosition(6, -4), FretboardPosition(7, 1)], 
+        str(Note("C#", 2)) : [FretboardPosition(6, -3), FretboardPosition(7, 2)], 
+        str(Note("Db", 2)) : [FretboardPosition(6, -3), FretboardPosition(7, 2)], 
+        str(Note("D", 2)) :  [FretboardPosition(6, -2), FretboardPosition(7, 3)], 
         str(Note("D#", 2)) : [FretboardPosition(6, -1), FretboardPosition(7, 4)],
         str(Note("Eb", 2)) : [FretboardPosition(6, -1), FretboardPosition(7, 4)],
         # E standard notes
-        str(Note("E", 2)) :  [FretboardPosition(6, 0)], 
+        str(Note("E", 2)) :  [FretboardPosition(6, 0), FretboardPosition(7, 5)], 
         str(Note("F", 2)) :  [FretboardPosition(6, 1)],
         str(Note("F#", 2)) : [FretboardPosition(6, 2)],
         str(Note("Gb", 2)) : [FretboardPosition(6, 2)],
@@ -293,7 +296,7 @@ TUNINGS = {
         # NOTE: 7 and 8 string guitar tunings can be created by simply appending extended range to existing 6 string tuning; for example, B standard (7 string) = ["B"] + TUNINGS["E standard"] 
 
         # 6 String standard tunings
-        "E standard": [],
+        "E standard": ["E", "A", "D", "G", "B", "E"],
         "Eb standard" : ["Eb", "Ab", "Db", "Gb", "Bb", "Eb"], 
         "Drop D": ["D", "A", "D", "G", "B", "E"],
         
@@ -406,6 +409,11 @@ def get_best_next_position(previous, options, track, tuning):
     lateral_distances = []
     vertical_distances = []
     
+    # remove all 7th and 8th string positionings when
+    # playing in a 6-string tuning
+    if not tuning in EXTENDED_TUNINGS:
+        options = [option for option in options if not option.string in [7, 8]]
+    
     # get the lateral and vertical distance of every position on the fretboard that plays the note that comes after the "previous" argument
     for option in options:
         lateral_distance = lateral_fretboard_distance(previous, option)
@@ -416,6 +424,10 @@ def get_best_next_position(previous, options, track, tuning):
     corresponding_note = get_corresponding_note(options[0]) # use [0] because it does not matter as they are all the same note
     open_option = get_open_option(str(corresponding_note))
     same_string_options = get_same_string_options(str(corresponding_note), previous.string)
+    
+    # if there is only one option, return that option
+    if len(options) == 1:
+        return(options[0])
     
     # if the note can be played open (0th fret), on the same string 
     # as the previous note, play openly.
@@ -517,11 +529,17 @@ def get_best_next_position_neo(previous, subsequent, options):
     return(candidates)
     """
 
-def notes_are_in_tuning(notes, tuning, name):
-    #print(f"Testing tuning: {name}")
+def notes_are_in_tuning(notes, tuning):
+    """
+    Determines whether or not a sequence of notes (string representation) are in 
+    a tuning. Returns True or False.
+    
+    keyword arguments:
+    notes: a list of the string representations of the note class
+    tuning: a string such as "Drop D", corresponding to a tuning.
+    """
     for note in notes:
         if not note in tuning:
-            #print(f"{str(note)} is not in {name} {[str(note) for note in tuning]}")
             return(False)
     return(True)
 
@@ -534,15 +552,42 @@ def notes_are_in_tuning(notes, tuning, name):
 def determine_tuning(notes, tunings):
     """
     Determines the tuning the guitar should be in, based on the lowest played note.
+    
+    keyword arguments:
+    notes -- a sequence of the string representations of note instances.
+    tunings -- a dictionary corresponding to all the tunings to check (TUNINGS dictionary in
+             on line 292)
     """
     decision = None
     for tuning in tunings:
-        if notes_are_in_tuning(notes, tunings[tuning], tuning):
+        if notes_are_in_tuning(notes, tunings[tuning]):
             return(tuning)    
     return(None)
         
+def determine_all_tunings(notes, tunings, accumulated = []):
+    """
+    Determines all the tunings in which a song can be played
+    
+    keyword arguments
+    notes -- a sequence of the string representations of note instances.
+    tunings -- a dictionary corresponding to all the tunings to check (TUNINGS dictionary in
+               on line 292)
+    accumulated -- all the tunings that have already been established the notes can be played in
+    """
+    # we do not have to check tunings that are already
+    # determined to be suitable for the song
+    # so just remove them from the list of tunings to check
+    for tuning_to_ignore in accumulated:
+        del tunings[tuning_to_ignore]
         
-
+    for tuning in tunings: 
+        # we do not have to check tunings that are already
+        # determined to be suitable for the song
+        # so just remove them from the list of tunings to check
+        if (notes_are_in_tuning(notes, tunings[tuning])) and (not tuning in accumulated):
+            accumulated.append(tuning)
+    return(accumulated)
+        
 def transpose_fretboard_position(note, level: int):
     """
     Given a note, return the position on the fretboard on which it is played for a guitar that is tuned <level> HALF STEPS lower or higher.
@@ -686,34 +731,10 @@ def get_tritone_chord(root):
     ]
     return(positions) 
 
-
-# old style when internal representation was different
-# REMOVE THIS ON 03/0/2023 IF EVERYTHING WORKS FINE
-# BY 03/08/2023 THIS IS OUTDATED CODE
+# updated version -- internal note representation (Note class) is
+#                    now the same as the representation from the
+#                    transcriber 
 def parse_transcriber_note(note: str):
-    """
-    Reads the string representation of notes from the transcriber app and converts it to the equivalent Note instance
-    representation. For example E2 → Note("E", 0)
-    
-    keyword arguments
-    note -- string representation of the note as they are provided by the transcriber application
-    """
-    if "#" in note:
-        note_name = note[0:2]
-    else:
-        note_name = note[0]
-    
-    # last character is always a number corresponding to the octave
-    octave = int(note[len(note)-1]) 
-    
-    # open E on a EADGBe guitar is E2 in transcriber.
-    # but Note("E", 0) in this application. So decrement octave by 2.
-    octave -= 2
-    
-    equivalent_note_instance = Note(note_name, octave)
-    return(equivalent_note_instance)
-    
-def parse_transcriber_note_neo(note: str):
     """
     Reads the string representation of notes from the transcriber app and converts it to the equivalent Note instance
     
@@ -733,7 +754,19 @@ def parse_transcriber_note_neo(note: str):
     
     equivalent_note_instance = Note(note_name, octave)
     return(equivalent_note_instance)
-    
+   
+def apply_scale_factor(tab_dictionary, tuning):
+    """
+    Corrects the positionings in a Tab_Dictionary instance so that they are
+    reflective of how the song would be played in a certain tuning 
+    (otherwise, the tab would show negative frets (impossible))
+    """
+    for string in tab_dictionary.keys():
+        scale_factor = transpose_map[tuning][string]
+        for fret in tab_dictionary[string]:
+            fret.position += scale_factor
+    return(tab_dictionary)
+   
 def generate_tab_dictionary(notes, tuning):
     """
     Generates an instance of the  Tab_Dictionary class, given a list of notes. The Tab_Dictionary instance associates all the notes with a sequence number by putting them in a Term instance, and then associates those notes with a string. This provides all the information needed to create a tab.
@@ -747,19 +780,11 @@ def generate_tab_dictionary(notes, tuning):
     # on the first note, then there is nothing to reference, so manually insert
     # the first note, always.
     try:
-        print(str(notes[0]))
-        debug = TAB_MAP[str(notes[0])]
-        for element in debug:
-            print(str(element))
+        #print(str(notes[0]))
+        #debug = TAB_MAP[str(notes[0])]   # remove commented-out part later on march 26th
+        #for element in debug:
+            #print(str(element))
         first = TAB_MAP[str(notes[0])][0] # final [0] prefers the 6th string over others
-        
-        # if tuning is found to be lower than E standard, then
-        # just scale the frets.
-        if tuning != "E standard":
-            scale_factor = transpose_map[tuning][first.string]
-            print(f"Applying scale factor: {scale_factor}")
-            first.fret += scale_factor
-            print(f"Success: went from fret {first.fret - scale_factor} to {first.fret}")
         positions.append(first)
         previous = first
     except:
@@ -772,18 +797,13 @@ def generate_tab_dictionary(notes, tuning):
         note = notes[x]
         options = TAB_MAP[str(note)]
         
-        # if tuning is found to be lower than E standard, then
-        # just scale the frets.
-        if tuning != "E standard":
-            for option in options:
-                option.fret += transpose_map[tuning][option.string]
-        
         easiest = get_best_next_position(previous, options, positions, tuning)
         positions.append(easiest)
         previous = easiest
     
     # represent tab as a dictionary
     tab_dictionary = {
+                      7 : [],
                       6 : [],
                       5 : [],
                       4 : [],
@@ -805,7 +825,11 @@ def generate_tab_dictionary(notes, tuning):
     for position in positions:
         tab_dictionary[position.string].append(Term(counter, position.fret))
         counter += 1
-    return(Tab_Dictionary(tab_dictionary, counter))
+    
+    result = Tab_Dictionary(tab_dictionary, counter)
+    if tuning != "E standard":
+        result = apply_scale_factor(result, tuning)
+    return(result)
         
 def generate_tab(tab_dictionary, tuning):
     """
@@ -816,12 +840,14 @@ def generate_tab(tab_dictionary, tuning):
     """
     
     # represent tab to be printed as a dictionary
-    tab = {6 : [],
-           5 : [],
-           4 : [],
-           3 : [],
+    tab = {
+           1 : [],
            2 : [],
-           1 : []
+           3 : [],
+           4 : [],
+           5 : [],
+           6 : [],
+           7 : []
           }
     
     # if tuned to B standard, treat as a 7 string guitar
@@ -861,6 +887,8 @@ def generate_tab(tab_dictionary, tuning):
         # aesthetic: use the tuning information and the strings_for_tunings dictionary
         #            from the tunings library to replace 6, 5, 4, ..., 1
         #            with the actual notes the open strings correspond to
+        if not key in STRINGS_FOR_TUNINGS[tuning].keys():
+            continue
         key_label = STRINGS_FOR_TUNINGS[tuning][key]
         tab_string += f"{key_label}|-"
         frets = tab[key]
@@ -868,6 +896,3 @@ def generate_tab(tab_dictionary, tuning):
             tab_string += fret
         tab_string += "\n"
     return(tab_string)
-        
-        
-     
