@@ -6,10 +6,10 @@ from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 import random
 import MySQLdb
-from flask_cors import CORS, cross_origin
+
 import os
 
-import extractNotes
+from transcriber import transcribe
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,79 +31,30 @@ app.config['MYSQL_DB'] = "sql9591604"
 
 mysql = MySQL(app)
 
-def validatepw(password):
-      a=0
-      b=0
-      c=0
-      d=0
-      if len(password)<8 or len(password)>20:
-         return 0
-      for i in password:
-         if i.isupper():
-            a+=1
-         elif i.islower():
-            b+=1
-         elif i in '"!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"':
-            c+=1
-         elif i.isdigit():
-            d+=1
-      if a>=1 and b>=1 and c>=1 and d>=1 and a+b+c+d==len(password):
-        return 1
-      else:
-         return 0
-
-
-def validateUser(username):
-    
-    for i in username:
-        if i in '"!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"':
-            return 0
-    if len(username)<8 or len(username)>20:
-         return 0
-    return 1
-
-def validateEmail(email):
-    a=0
-    b=0
-    for i in email:
-        if i == '.':
-            a += 1
-        if i =='@':
-            b += 1
-    if a >=1 and b == 1:
-        return 1
-    else: 
-        return 0
-    
-    
-
 @app.route('/form')
 def form():
     return render_template('form.html')
 
-@app.route('/upload', methods = ['POST', 'GET'])
+@app.route('/app', methods = ['POST', 'GET'])
 def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-        notes = extractNotes.midiConvert(f.filename)
-        Tscript = extractNotes.run(notes)
+        Tscript = transcribe(f.filename)
         session["var"] = Tscript
         songnotes = Tscript
         songID = random.randrange(1000)
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
+        cursor.execute(''' INSERT INTO Transcriptions (Notes, SongID) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
-    return Tscript
+    return render_template('app.html')
 
 @app.route('/display')
 def display():
         if "var" in session:
             var = session["var"]
-            print (var)
-            with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
-                return f.read()
+            return render_template('display.html', var = var)
         else:
             return render_template('display.html', var ='no data in session')
 
@@ -121,9 +72,9 @@ def search():
             return render_template('search.html')
 
         if request.method == 'POST':
-            songID = request.form['SongID']
+            songID = request.form['songID']
             cursor = mysql.connection.cursor()
-            cursor.execute('''SELECT * from Tabs WHERE idSong = (%s)''',(songID))
+            cursor.execute('''SELECT * from Transcriptions WHERE songID = (%s)''',(songID))
             data = cursor.fetchone()
             mysql.connection.commit()
             session["var"] = songID
@@ -139,15 +90,6 @@ def login():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        validPW = validatepw(password)
-        if validPW == 0:
-            return render_template('login.html', d = "Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters.")
-        validEmail = validateEmail(email)
-        if validEmail == 0:
-            return render_template('login.html', d = "Please input a valid email address.")
-        validUser = validateUser(username)
-        if validUser == 0:
-            return render_template('login.html', d = "Please input a valid username. A valid username is at least 8 characters and contains no special characters.")
         idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
