@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router,Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router,Routes, Route} from 'react-router-dom';
 import Home from './component/home';
 import About from './component/about';
 import Contact from './component/contact';
 import Drop from './component/drop';
 import Register from './component/register';
+import Display from './component/display.js';
+
 
 
 import './App.css';
@@ -22,17 +24,17 @@ class App extends Component {
                 <li><a href="contact">contact</a></li>
                 <li><a href="search">search</a></li>
             </ul>
-			<Routes>
-                 <Route exact path='/' element={< Home />}></Route>
-                 <Route exact path='/about' element={< About />}></Route>
-                 <Route exact path='/contact' element={< Contact />}></Route>
-                 <Route exact path='/drop' element={< Drop />}></Route>
-			     <Route exact path='/register' element={< Register />}></Route>
+			    <Routes>
+                <Route exact path='/' element={< Home />}></Route>
+                <Route exact path='/about' element={< About />}></Route>
+                <Route exact path='/contact' element={< Contact />}></Route>
+                <Route exact path='/drop' element={< Drop />}></Route>
+			          <Route exact path='/register' element={< Register />}></Route>
+                
           </Routes>
         </div>
        </Router>
    );
   }
 }
-  
 export default App;

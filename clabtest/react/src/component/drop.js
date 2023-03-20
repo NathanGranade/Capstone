@@ -1,4 +1,5 @@
 import React from 'react';
+import Display from './display.js';
 
 class Drop extends React.Component {
   constructor(props) {
@@ -23,7 +24,6 @@ class Drop extends React.Component {
     }).then((response) => {
       response.json().then((body) => {
         this.setState({ tab: `http://localhost:8000/${body.file}` });
-        console.log(data)
       });
     });
   }
@@ -40,6 +40,7 @@ class Drop extends React.Component {
           <button>Upload</button>
         </div>
       </form>
+      <Display />
       </div>
     );
   }

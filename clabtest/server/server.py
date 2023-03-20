@@ -97,15 +97,17 @@ def upload():
         cursor.close()
     return ""
 
+
+
 @app.route('/display')
 def display():
-        if "var" in session:
-            var = session["var"]
-            print (var)
-            with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
-                return f.read()
-        else:
-            return render_template('display.html', var ='no data in session')
+    if "var" in session:
+        var = session["var"]
+        print (var, "VAR")
+        with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+            return {"tab": f.read()}
+    else:
+        return "no data in session"
 
 @app.route('/retrieve')
 def retrieve():
