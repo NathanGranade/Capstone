@@ -290,7 +290,11 @@ TAB_MAP = {
         # Four Octaves up
         str(Note("E", 6)) :  [                                                                                                                                  FretboardPosition(1, 24)]
     }
-        
+
+# lookup table to be referenced by get_best_next_position() method
+# to increase performance by not having to check as many if-statements
+# if the best next position calculation has already been made
+LOOKUP_TABLE = dict()
 
 TUNINGS = {
         # NOTE: 7 and 8 string guitar tunings can be created by simply appending extended range to existing 6 string tuning; for example, B standard (7 string) = ["B"] + TUNINGS["E standard"] 
@@ -405,7 +409,16 @@ def get_open_option(note: str):
     # otherwise, return None
     return(None)
 
+def insert_into_lookup_table(previous, options, choice):
+    LOOKUP_TABLE[str(previous)] = {str(options) : choice}
+
 def get_best_next_position(previous, options, track, tuning):
+    # use lookup table to avoid unnecessary calculation
+    if str(previous) in LOOKUP_TABLE.keys():
+        if str(options) in LOOKUP_TABLE[str(previous)]:
+            #print(f"used lookup table for\n\tprevious = {str(previous)}\n\toptions = {str([str(option) for option in options])}")
+            return(LOOKUP_TABLE[str(previous)][str(options)])
+    
     lateral_distances = []
     vertical_distances = []
     
@@ -424,15 +437,19 @@ def get_best_next_position(previous, options, track, tuning):
     corresponding_note = get_corresponding_note(options[0]) # use [0] because it does not matter as they are all the same note
     open_option = get_open_option(str(corresponding_note))
     same_string_options = get_same_string_options(str(corresponding_note), previous.string)
-    
+        
     # if there is only one option, return that option
     if len(options) == 1:
+        # add to lookup table
+        insert_into_lookup_table(previous, options, options[0])
         return(options[0])
     
     # if the note can be played open (0th fret), on the same string 
     # as the previous note, play openly.
     if open_option != None:
         if previous.string == open_option.string:
+            # add to lookup table
+            insert_into_lookup_table(previous, options, open_option)   
             return(open_option)
     
     for option in same_string_options:
@@ -440,12 +457,16 @@ def get_best_next_position(previous, options, track, tuning):
         # previous note and the previous note was played openly
         # then play it on the same string, regardless of distance
         if previous.fret == 0:
+            # add to lookup table
+            insert_into_lookup_table(previous, options, option)
             return(option)
         
         # if previous note was not played on open string
         # then still prefer the same string, so long as it is
         # not too far away (5+ frets away)
         if lateral_fretboard_distance(previous, option) < 5:
+            # add to lookup table
+            insert_into_lookup_table(previous, options, option)
             return(option)
     
     # if the previously played note was played on an open string,
@@ -467,10 +488,14 @@ def get_best_next_position(previous, options, track, tuning):
             try:
                 second_minimum_string_skipping_position_index = vertical_distances.index(sorted_vertical_distances[1])
                 second_minimum_string_skipping_position = options[second_minimum_string_skipping_position_index]
+                # add to lookup table
+                insert_into_lookup_table(previous, options, second_minimum_string_skipping_position)
                 return(second_minimum_string_skipping_position)
             except:    
                 pass
         # otherwise, return the position that minimizes string skipping
+        # add to lookup table
+        insert_into_lookup_table(previous, options, minimum_string_skipping_position)
         return(minimum_string_skipping_position)
     
     # if none of the other heuristics apply, then
@@ -478,6 +503,8 @@ def get_best_next_position(previous, options, track, tuning):
     smallest_distance = min(lateral_distances)
     smallest_distance_index = lateral_distances.index(smallest_distance)
     nearest = options[smallest_distance_index]
+    # add to lookup table
+    insert_into_lookup_table(previous, options, nearest)
     return(nearest)
             
 # prototype new version that takes into account the NEXT note as well
@@ -647,6 +674,12 @@ def get_perfect_fourth(note: str):
     return(perfect_fourth)
        
 def get_corresponding_note(position):
+    """
+    Gets the note instance that corresponds to a position on the fretboard. 
+    
+    keyword arguments
+    position -- an instance of the FretboardPosition class.
+    """
     keys = TAB_MAP.keys()
     for note in keys:
         positions = TAB_MAP[note]
