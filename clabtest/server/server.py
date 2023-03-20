@@ -86,10 +86,8 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-
         notes = extractNotes.midiConvert(f.filename)
         Tscript = extractNotes.run(notes)
-
         session["var"] = Tscript
         songnotes = Tscript
         songID = random.randrange(1000)
@@ -97,7 +95,7 @@ def upload():
         cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
-    return Tscript
+    return ""
 
 @app.route('/display')
 def display():
