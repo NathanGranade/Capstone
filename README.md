@@ -3,7 +3,7 @@
 
 # Aaron Earp
 # Samuel Evans
-# Nathan Grenade
+# Nathan Granade
 # David Jara
 # Thomas Nguyen
 
