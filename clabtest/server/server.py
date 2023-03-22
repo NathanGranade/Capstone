@@ -112,8 +112,6 @@ def upload():
 def display():
     with open('RawNotes/RawNotes-tab.txt', 'r') as f:
         output = f.read() 
-    with open('RawNotes/RawNotes-tab.txt', 'r+') as f2:
-        f2.truncate(0)
     print(output)
     return {"tab" : output}
 
