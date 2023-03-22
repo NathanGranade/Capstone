@@ -45,6 +45,6 @@ def run(filepath):
     print(filepath)
     return os.system("python tab_generator_interface.py generate_tab {}".format(filepath) )
 
-    
+print(run(midiConvert('lamb.mid')))
 
         

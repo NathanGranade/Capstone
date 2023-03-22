@@ -89,8 +89,10 @@ def upload():
         notes = extractNotes.midiConvert(f.filename)
         Tscript = extractNotes.run(notes)
         session["var"] = Tscript
-        songnotes = Tscript
+        with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+            songnotes = f.read()
         songID = random.randrange(1000)
+        print("DEBUG: SONG ID = "  + songID)
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
@@ -131,7 +133,7 @@ def search():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return ""
      
     if request.method == 'POST':
         email = request.form['email']
@@ -139,22 +141,22 @@ def login():
         password = request.form['password']
         validPW = validatepw(password)
         if validPW == 0:
-            return render_template('login.html', d = "Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters.")
+            return "Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters."
         validEmail = validateEmail(email)
         if validEmail == 0:
-            return render_template('login.html', d = "Please input a valid email address.")
+            return "Please input a valid email address."
         validUser = validateUser(username)
         if validUser == 0:
-            return render_template('login.html', d = "Please input a valid username. A valid username is at least 8 characters and contains no special characters.")
+            return "Please input a valid username. A valid username is at least 8 characters and contains no special characters."
         idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
         mysql.connection.commit()
         cursor.close()
     if email and username and password:
-        return render_template('login.html', d = "USER REGISTERED")
+        return "USER REGISTERED"
     else:
-        return render_template('login.html', d = "Please fill out all forums.")
+        return "Please fill out all forums."
 
 
 if __name__ == '__main__':
