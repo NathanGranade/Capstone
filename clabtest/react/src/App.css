@@ -163,4 +163,8 @@ a:visited {
     height: 20%;
     width: 20%;
 }
+.tab{
+  text-align: left;
+  white-space: pre-wrap;
+}
 

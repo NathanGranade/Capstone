@@ -12,8 +12,7 @@ class Drop extends React.Component {
     this.handleUpload = this.handleUpload.bind(this);
   }
 
-  handleUpload(ev) {
-    ev.preventDefault();
+  handleUpload() {
 
     const data = new FormData();
     data.append('file', this.uploadInput.files[0]);
@@ -23,14 +22,14 @@ class Drop extends React.Component {
       body: data,
     }).then((response) => {
       response.json().then((body) => {
-        this.setState({ tab: `http://localhost:8000/${body.file}` });
+        console.log(response);
       });
     });
   }
 
   render() {
     return (
-      <div class="title-body">
+      <div className="title-body">
       <form onSubmit={this.handleUpload}>
         <div>
           <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
@@ -42,7 +41,9 @@ class Drop extends React.Component {
       </form>
       <Display />
       </div>
+      
     );
+
   }
 }
 

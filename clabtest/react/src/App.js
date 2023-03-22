@@ -5,7 +5,6 @@ import About from './component/about';
 import Contact from './component/contact';
 import Drop from './component/drop';
 import Register from './component/register';
-import Display from './component/display.js';
 
 
 
@@ -15,8 +14,8 @@ class App extends Component {
   render() {
     return (
        <Router>
-        <div class="navbar" >
-            <ul class="nav-list">
+        <div className="navbar" >
+            <ul className="nav-list">
                 <li><a href="register" id="register">sign up</a></li>
                 <li><a href="/">clab🎧</a></li>
                 <li><a href="tuner" id="tuner">tuner</a></li>

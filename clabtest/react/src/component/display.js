@@ -23,8 +23,8 @@ function Display () {
     }, []);
   
     return (
-        <div class="title-body">
-                <p>{data.tab}</p>
+        <div className="title-body">
+                <p className="tab">{data.tab}</p>
         </div>
     );
 }
