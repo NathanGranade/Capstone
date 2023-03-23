@@ -30,7 +30,8 @@ app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
 app.config['MYSQL_DB'] = "sql9591604"
 
 mysql = MySQL(app)
-
+with open('RawNotes/RawNotes-tab.txt', 'r+') as f2:
+        f2.truncate(0)
 def validatepw(password):
       a=0
       b=0
@@ -92,19 +93,27 @@ def upload():
         with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
             songnotes = f.read()
         songID = random.randrange(1000)
-        print("DEBUG: SONG ID = "  + songID)
+        print("DEBUG: SONG ID = "  + str(songID))
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
-    return ""
+        with open('RawNotes/RawNotes-tab.txt', 'r') as f:
+            output = f.read() 
+        with open('RawNotes/RawNotes-tab.txt', 'r+') as f2:
+            f2.truncate(0)
+        print(output)
+    return {"tab" : output}
+    
 
 
 
 @app.route('/display')
 def display():
-    with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
-        return {"tab" : f.read()}
+    with open('RawNotes/RawNotes-tab.txt', 'r') as f:
+        output = f.read() 
+    print(output)
+    return {"tab" : output}
 
 
 @app.route('/retrieve')
