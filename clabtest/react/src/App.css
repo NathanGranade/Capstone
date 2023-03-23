@@ -1,6 +1,7 @@
 * {
   padding:0;
   margin:0;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -11,7 +12,7 @@ body {
 
 .navbar {
   padding: 1em;
-  text-align: right;
+  text-align: center;
 }
 
 .nav-list{
@@ -37,31 +38,39 @@ a:visited {
   color: white;
 }
 
-
+#title{
+  text-decoration: none;
+}
 .title {
   font-family: 'Oswald', sans-serif;
-  font-size: 8em;
-}
-
-.dropzone{
-  background-color: black;
-  color: white;
-  border-radius: 2em;
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  text-align: center;
-  opacity: 30%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  border: dotted;
-  height: 30%;
-  width: 50%;
+  font-size: 12em;
+  text-shadow: 5px 5px black;
+  text-decoration: none;
 }
 
 .title-text{
-  padding-top: 12%;
+  padding-top: 2%;
   font-size: 2em;
+  font-style: italic;
+}
+.title-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+
+
+}
+#about {
+  flex-direction: row; 
+  font-size: 2em;
+}
+.about-section {
+  height: 80%;
+  padding: 1em;
+  width: 30%;
 }
 
 .button-19 {
@@ -75,7 +84,7 @@ a:visited {
   cursor: pointer;
   display: inline-block;
   font-family: din-round,sans-serif;
-  font-size: 15px;
+  font-size: 100%;
   font-weight: 700;
   letter-spacing: .8px;
   line-height: 20px;
@@ -92,7 +101,7 @@ a:visited {
   -webkit-user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  width: 100%;
+  width: 10em;
 }
 
 .button-19:after {
@@ -124,27 +133,11 @@ a:visited {
   cursor: auto;
 }
 
-.controls {
-  position: fixed;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 .about {
   font-size: 2em;
   width: 50%
 }
-.title-body {
-  border-radius: 2em;
-  position: fixed;
-  top: 35%;
-  left: 50%;
-  text-align: center;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  height: 35%;
-  width: 50%;
-}
+
 
 .login-form {
   box-shadow: 3px 3px #cfe6ee;
@@ -164,7 +157,10 @@ a:visited {
     width: 20%;
 }
 .tab{
-  text-align: left;
+  border-radius: 1em;
+  text-align: justify ;
   white-space: pre-wrap;
+  color:black;
+  background-color: white;
 }
 

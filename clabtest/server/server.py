@@ -32,6 +32,7 @@ app.config['MYSQL_DB'] = "sql9591604"
 mysql = MySQL(app)
 with open('RawNotes/RawNotes-tab.txt', 'r+') as f2:
         f2.truncate(0)
+        
 def validatepw(password):
       a=0
       b=0
@@ -76,8 +77,6 @@ def validateEmail(email):
     else: 
         return 0
     
-    
-
 @app.route('/form')
 def form():
     return render_template('form.html')
@@ -105,9 +104,6 @@ def upload():
         print(output)
     return {"tab" : output}
     
-
-
-
 @app.route('/display')
 def display():
     with open('RawNotes/RawNotes-tab.txt', 'r') as f:
