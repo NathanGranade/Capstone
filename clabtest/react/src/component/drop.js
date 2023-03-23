@@ -10,6 +10,7 @@ class Drop extends React.Component {
     };
 
     this.handleUpload = this.handleUpload.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   handleUpload() {
@@ -26,9 +27,16 @@ class Drop extends React.Component {
       });
     });
   }
+  handleScroll(){
+    const element = document.getElementById('');
+    if(element){
+      element.scrollIntoView({behavior: 'smooth'});
+    }
 
+  };
   render() {
     return (
+      <body>
       <div className="title-body">
       <form onSubmit={this.handleUpload}>
         <div>
@@ -36,12 +44,12 @@ class Drop extends React.Component {
         </div>
         <br />
         <div>
-          <button>Upload</button>
+          <button className="btn-scroll" onClick={this.handleScroll}>Upload</button>
         </div>
       </form>
       <Display />
       </div>
-      
+      </body>
     );
 
   }

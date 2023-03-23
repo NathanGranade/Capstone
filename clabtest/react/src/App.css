@@ -144,6 +144,8 @@ a:visited {
   transform: translate(-50%, -50%);
   height: 35%;
   width: 50%;
+  
+
 }
 
 .login-form {
@@ -166,5 +168,11 @@ a:visited {
 .tab{
   text-align: left;
   white-space: pre-wrap;
+  width:100%;
+  height:100vh;
+  overflow-y:auto;
+  padding: 20px; 
+  top: 50%
+
 }
 
