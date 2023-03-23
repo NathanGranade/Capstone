@@ -37,7 +37,8 @@ class Drop extends React.Component {
   render() {
     return (
       <body>
-      <div className="title-body">
+      <div id="upload">
+      <h1>Choose a file to upload</h1>
       <form onSubmit={this.handleUpload}>
         <div>
           <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
