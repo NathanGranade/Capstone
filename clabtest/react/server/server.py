@@ -6,6 +6,7 @@ from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 import random
 import MySQLdb
+from flask_cors import CORS, cross_origin
 import os
 
 import extractNotes

@@ -63,18 +63,12 @@ a:visited {
 }
 #about {
   flex-direction: row; 
-  font-size: 1.5em;
+  font-size: 2em;
 }
 .about-section {
   height: 80%;
   padding: 1em;
   width: 30%;
-  overflow: scroll;
-}
-
-textarea {
-  height: 10em;
-  width: 20em;
 }
 
 #upload {
@@ -82,7 +76,6 @@ textarea {
   width: 100%;
   height: 8vh;
 }
-
 
 .button-19 {
   appearance: button;
