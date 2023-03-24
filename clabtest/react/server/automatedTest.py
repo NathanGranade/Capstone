@@ -5,7 +5,7 @@ def automatedTest():
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser = webdriver.Chrome(options=options)
     
-    browser.get('http://127.0.0.1:8000/')
+    browser.get('http://localhost:3000/')
 
     button = browser.find_element("id","register")
     time.sleep(5)
