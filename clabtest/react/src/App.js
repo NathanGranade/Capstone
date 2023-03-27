@@ -15,11 +15,10 @@ class App extends Component {
        <Router>
         <div className="navbar" >
             <ul className="nav-list">
-                <li><a href="register" id="register">sign up</a></li>
-                {/* <li><a href="tuner" id="tuner">tuner</a></li> */}
+                <li><a href="/">home</a></li>
                 <li><a href="#about">about</a></li>
-                <li><a href="contact">contact</a></li>
-                {/* <li><a href="search">search</a></li> */}
+                <li><a href="#contact">contact</a></li>
+                <li><a href="register" id="register">sign up</a></li>
             </ul>
 			    <Routes>
                 <Route exact path='/' element={< Home />}></Route>

@@ -4,14 +4,13 @@ import React from 'react';
 function Home (){
     return (
     <body>
-    
+        
         <div className="title-body">
         <a href="/" id ="title"><h1 className="title">CLAB🎵</h1></a>
             <a href="drop"><button className="button-19">Get Started</button></a>
             <p className="title-text">Create Sheet Music with Ease</p>
         </div>
         <div className="title-body" id="about">
-        {/* <h2>Clab🎧</h2> */}
         <div class="about-section">
             <h2>What is CLAB?🤔</h2>
             <hr></hr>
@@ -27,6 +26,13 @@ function Home (){
             <hr></hr>
             <p>CLAB employ artificial intelligence algorithms to detect notes and rhythms in audio files. The software analyzes the audio file and uses machine learning techniques to identify each note and the timing of each note. Once the software has identified the notes and rhythms, it creates a music notation file that the user can edit, store, and share. The user can export the music notation file in a PDF format. CLAB is easy to use and provides accurate results, making it an indispensable tool for anyone looking to accelerate the process of creating music notation.</p>
         </div>
+        </div>
+        <div class="title-body" id="contact">
+                <h1>Contact Us!</h1>
+                <p>Email <input id="email" type = "text" name = "email" placeholder="email"/></p>
+                <p>Name <input id="username" type = "text" name = "username" placeholder="name"/></p>
+                <p><textarea class="message" type = "text" name = "password" placeholder="Message..."></textarea></p>
+                <div class="controls" id="b1"><input class="button-19" id="submit" type = "submit"/></div>
         </div>
     </body>
     )
