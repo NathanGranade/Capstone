@@ -9,6 +9,8 @@ import MySQLdb
 from flask_cors import CORS, cross_origin
 import os
 
+
+
 import extractNotes
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -30,9 +32,7 @@ app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
 app.config['MYSQL_DB'] = "sql9591604"
 
 mysql = MySQL(app)
-with open('RawNotes/RawNotes-tab.txt', 'r+') as f2:
-        f2.truncate(0)
-        
+
 def validatepw(password):
       a=0
       b=0
@@ -77,6 +77,8 @@ def validateEmail(email):
     else: 
         return 0
     
+    
+
 @app.route('/form')
 def form():
     return render_template('form.html')
@@ -89,27 +91,27 @@ def upload():
         notes = extractNotes.midiConvert(f.filename)
         Tscript = extractNotes.run(notes)
         session["var"] = Tscript
-        with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
-            songnotes = f.read()
+        filepath = os.path.join('RawNotes', 'RawNotes.txt')
+        if not os.path.exists('RawNotes'):
+            os.makedirs('RawNotes')
+        f = open(filepath, "r")
+        songnotes = f.read()
+
         songID = random.randrange(1000)
         print("DEBUG: SONG ID = "  + str(songID))
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
-        with open('RawNotes/RawNotes-tab.txt', 'r') as f:
-            output = f.read() 
-        with open('RawNotes/RawNotes-tab.txt', 'r+') as f2:
-            f2.truncate(0)
-        print(output)
-    return {"tab" : output}
-    
+    return {'tab' : songnotes}
+
+
+
 @app.route('/display')
 def display():
-    with open('RawNotes/RawNotes-tab.txt', 'r') as f:
-        output = f.read() 
-    print(output)
-    return {"tab" : output}
+    with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+        output = f.read()
+        return {"tab" : output}
 
 
 @app.route('/retrieve')
@@ -163,24 +165,6 @@ def login():
     else:
         return "Please fill out all forums."
 
-@app.route('/contact', methods = ['POST', 'GET'])
-def contact():
-    if request.method == 'GET':
-        return render_template('contact.html')
-    
-    if request.method == 'POST':
-        email = request.form['email']
-        name = request.form['name']
-        message = request.form['message'] 
-        validEmail = validateEmail(email)
-        if validEmail == 0:
-            return render_template('contact.html', d = "Please input a valid email address.")
-        cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO Feedback (email,name,message) VALUES(%s,%s,%s)''',(email,name,message))
-        mysql.connection.commit()
-        cursor.close()
-        if email and name and message:
-            return render_template('login.html', d = "Feedback received")
 
 if __name__ == '__main__':
     app.run(debug = True, port = 8000)
