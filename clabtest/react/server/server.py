@@ -89,8 +89,7 @@ def upload():
     
     if request.method == 'POST':
         global FLAG
-        FLAG += 1
-        print("FLAG in upload is {}".format(FLAG))
+        
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         notes = extractNotes.midiConvert(f.filename)
@@ -101,8 +100,8 @@ def upload():
             os.makedirs('RawNotes')
         f = open(filepath, "r")
         songnotes = f.read()
-        #FLAG += 1
-        #print("FLAG in upload is {}".format(FLAG))
+        FLAG += 1
+        print("FLAG in upload is {}".format(FLAG))
         songID = random.randrange(1000)
         print("DEBUG: SONG ID = "  + str(songID))
         cursor = mysql.connection.cursor()
@@ -120,7 +119,7 @@ def display():
     if FLAG == 1:
         with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
             output = f.read()
-        FLAG =0
+        FLAG -=1
         return {"tab" : output}
     else: 
         return {"tab": ""}
