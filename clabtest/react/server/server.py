@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 import random
 import MySQLdb
 import os
-
+import time
 
 
 import extractNotes
@@ -32,7 +32,7 @@ app.config['MYSQL_DB'] = "sql9591604"
 
 mysql = MySQL(app)
 
-FLAG = 0
+Flag = False
 
 def validatepw(password):
       a=0
@@ -86,10 +86,15 @@ def form():
 
 @app.route('/upload', methods = ['POST', 'GET'])
 def upload():
-    
+    global Flag
+    filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+    if os.path.exists('RawNotes'):
+        f = open(filepath, "r+")
+        f.truncate()
+
     if request.method == 'POST':
-        global FLAG
         
+        print("FLAg IS {} IN UPLOAD".format(Flag))
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         notes = extractNotes.midiConvert(f.filename)
@@ -100,29 +105,31 @@ def upload():
             os.makedirs('RawNotes')
         f = open(filepath, "r")
         songnotes = f.read()
-        FLAG += 1
-        print("FLAG in upload is {}".format(FLAG))
+        
+        
+        
         songID = random.randrange(1000)
         print("DEBUG: SONG ID = "  + str(songID))
         cursor = mysql.connection.cursor()
         cursor.execute(''' INSERT INTO Tabs (Tablature, idSong) VALUES(%s,%s)''',(songnotes, songID))
         mysql.connection.commit()
         cursor.close()
-    return {'tab' : songnotes}
+        f.close()
+    return {"tab" : songnotes}
 
 
 
-@app.route('/display')
+@app.route('/display', methods = ['GET'])
 def display():
-    global FLAG
-    print("FLAG IN DISPLAY FUNCTION IS {}".format(FLAG))
-    if FLAG == 1:
-        with open('RawNotes/RawNotes-tab.txt', 'r') as f: 
+    global Flag
+    if request.method=='GET':
+        time.sleep(0.5)
+        with open('RawNotes/RawNotes-tab.txt', 'r+') as f: 
             output = f.read()
-        FLAG -=1
+    
+        
         return {"tab" : output}
-    else: 
-        return {"tab": ""}
+        
 
 
 @app.route('/retrieve')
