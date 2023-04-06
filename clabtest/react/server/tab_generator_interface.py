@@ -196,8 +196,6 @@ if argc >= 3:
                 print(str(note))
             
         # determine the tuning of the song -- setup
-        tunings = generate_tunings_map()
-        valid_tunings = tab_generator.determine_all_tunings(generator_compatible_notes, tunings)
         
         # determine the tuning of the song -- decision making
         # (1) if arguments were supplied to target a specific tuning
