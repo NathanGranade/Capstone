@@ -23,9 +23,12 @@ function Display () {
     }, []);
   
     return (
-        <div className="tab">
+        <body>
+        <div class="tab">
             <p>{data.tab}</p>
+            
         </div>
+        </body>
     );
 }
   
