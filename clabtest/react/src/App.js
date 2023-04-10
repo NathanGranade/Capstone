@@ -4,6 +4,7 @@ import Home from './component/home';
 import Contact from './component/contact';
 import Drop from './component/drop';
 import Register from './component/register';
+import Login from './component/login';
 
 
 
@@ -15,17 +16,17 @@ class App extends Component {
        <Router>
         <div className="navbar" >
             <ul className="nav-list">
-                <li><a href="/">home</a></li>
-                <li><a href="#about">about</a></li>
-                <li><a href="#contact">contact</a></li>
-                <li><a href="register" id="register">sign up</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="register" id="register">Sign Up</a></li>
             </ul>
 			    <Routes>
                 <Route exact path='/' element={< Home />}></Route>
                 <Route exact path='/contact' element={< Contact />}></Route>
                 <Route exact path='/drop' element={< Drop />}></Route>
 			          <Route exact path='/register' element={< Register />}></Route>
-                
+                <Route exact path='/login' element={< Login />}></Route>
           </Routes>
         </div>
        </Router>
