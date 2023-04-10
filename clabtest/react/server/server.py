@@ -34,7 +34,10 @@ app.config['MYSQL_DB'] = "sql9591604"
 mysql = MySQL(app)
 
 Flag = False
-
+filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+if os.path.exists('RawNotes'):
+    f = open(filepath, "r+")
+    f.truncate()
 def validatepw(password):
       a=0
       b=0
@@ -127,10 +130,22 @@ def display():
         time.sleep(0.5)
         with open('RawNotes/RawNotes-tab.txt', 'r+') as f: 
             output = f.read()
-    
-        
+            f.close()
+        #filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+        #if os.path.exists('RawNotes'):
+           # f = open(filepath, "r+")
+            #f.truncate()    
         return {"tab" : output}
-        
+    
+
+@app.route('/wipe', methods = ['GET'])
+def wipe():
+    filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+    if os.path.exists('RawNotes'):
+        f = open(filepath, "r+")
+        f.truncate()
+    return{"nullTab": ""}
+     
 
 
 @app.route('/retrieve')
@@ -195,7 +210,7 @@ def login():
         if cursor.rowcount == 0:
             return "User does not exist, try again, or go sign up!" 
         else:  
-            global loggedin == true
+           # global loggedin == true
             return "Logged in!"
     if request.method == 'GET':
         return ""

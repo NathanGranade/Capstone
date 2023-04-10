@@ -20,16 +20,30 @@ function Display () {
                 });
             })
         );
-    }, []);
-  
-    return (
-        <body>
-        <div class="tab">
-            <p>{data.tab}</p>
-            
-        </div>
-        </body>
-    );
+    }, [])
+    if (window.performance) {
+        if (performance.navigation.type === 1) {
+          return(
+            <body>
+                <div class="tab">
+                    <p>{""}</p>
+                    
+                </div>
+                </body>
+          );
+        } else {
+            return (
+                <body>
+                <div class="tab">
+                    <p>{data.tab}</p>
+                    
+                </div>
+                </body>
+            );
+        }
+      };
+   
+   
 }
   
 export default Display;
