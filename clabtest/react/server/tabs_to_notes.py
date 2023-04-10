@@ -104,13 +104,13 @@ INVERTED_TAB_MAP = {
 		"(String 6, fret 19)" : "B3",
 		"(String 5, fret 14)" : "B3",
 		"(String 4, fret 9)" : "B3)",
-		"(String 3, fret 4)" : "B3)",
-		"(String 2, fret 0)" : "B3)",
-		"(String 6, fret 20)" : "C4)",
-		"(String 5, fret 15)" : "C4)",
-		"(String 4, fret 10)" : "C4)",
-		"(String 3, fret 5)" : "C4)",
-		"(String 2, fret 1)" : "C4)",
+		"(String 3, fret 4)" : "B3",
+		"(String 2, fret 0)" : "B3",
+		"(String 6, fret 20)" : "C4",
+		"(String 5, fret 15)" : "C4",
+		"(String 4, fret 10)" : "C4",
+		"(String 3, fret 5)" : "C4",
+		"(String 2, fret 1)" : "C4",
 		"(String 6, fret 21)" : "Db4",
 		"(String 5, fret 16)" : "Db4",
 		"(String 4, fret 11)" : "Db4",
@@ -323,7 +323,7 @@ def iterate_over_tab_dictionary_vertically(tab_dictionary):
         for string in tab_dictionary.keys():
             print(f"string is: {string}")
             value = tab_dictionary[string][column]
-            if value in ["p", "/", "h", "-", "\n"]:
+            if value in ["p", "/", "h", "-", "\n", "x"]:
                 print(f"detected \"{value}\" -- ignoring string {string} for column {column}")
                 continue
             string_number = int(string.split(",")[1])
