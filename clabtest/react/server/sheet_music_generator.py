@@ -11,12 +11,12 @@
 # 2. run python -m music21.configure
 # 3. step 2 will prompt you to download musescore
 
-from music21 import note, stream, converter
+from music21 import note, chord, stream, converter
 from sys import argv
 
-def read_notes(filename: str):
+def read_chords(filename: str):
     """
-    reads the notes from 
+    reads the 
     
     keywords arguments
     filename -- the name/path of the file that contains the notes
@@ -26,13 +26,19 @@ def read_notes(filename: str):
     lines = file.readlines()
     file.close()
     for x in range(0, len(lines)):
-        lines[x] = lines[x][:len(lines[x])-1]
-    notes = []
-    for line in lines:
-        split_line = line.split()
-        for note in split_line:
-            notes.append(note)
-    return(notes)
+        # remove newline char at the end of each line
+        lines[x].replace("\n", "")
+    
+    # create all the chord instances
+    # ------------------------------------------------------------
+    # the chord constructor takes either a space delimited string
+    # or a list of strings representing the notes to be played
+    # for example 'E2 G2 A2' or equivalently ['E2', 'G2', 'A2']
+    # each line should already be space delimited, so we can
+    # just give the lines outright to the chord constructor
+    chords = [chord.Chord(line) for line in lines]
+    
+    return(chords)
 
 def generate_output_filename(input_name: str):
     split_name = input_name.split(".")
@@ -51,16 +57,13 @@ def generate_output_filename(input_name: str):
 argc = len(argv)
 # if a file to be read is supplied
 if argc > 1:
-    # get the notes in a single list
-    input_notes = read_notes(argv[1])
+    # get the chords in a single list
+    chords = read_chords(argv[1])
      
     # STREAM holds the notes on the sheet music
     STREAM = stream.Stream()
     
-    # go through every note and add it to the stream
-    for input_note in input_notes:
-        STREAM.append(note.Note(input_note))
+    # go through every chord and add it to the stream
+    for chord in chords:
+        STREAM.append(chord)
     STREAM.show()
-
-
-    

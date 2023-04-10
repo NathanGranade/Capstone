@@ -339,10 +339,8 @@ def iterate_over_tab_dictionary_vertically(tab_dictionary):
         print(f"column is now {column}")
     return(chords)
 
-
-
 def write_chords_to_file(file_name, chords) -> None:
-    file_handle = open(file_name, "a")
+    file_handle = open(file_name, "w")
     # the format of the file will be such that each line
     # in the file is a chord. Therefore a file containing only 3
     # chords may look as such (also note that a chord can be just a single
@@ -373,4 +371,4 @@ chords = iterate_over_tab_dictionary_vertically(unprocessed_tab_dictionary)
 for chord in chords:
     print(f"{chord}\n\n")
 
-write_chords_to_file("chords.txt", chords)
+write_chords_to_file(f"notes_for_{argv[1]}", chords)
