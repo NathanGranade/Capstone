@@ -4,7 +4,6 @@ import React from 'react';
 function Home (){
     return (
     <body>
-        
         <div className="title-body">
         <a href="/" id ="title"><h1 className="title">CLAB🎵</h1></a>
             <a href="drop"><button className="button-19">Get Started</button></a>

@@ -5,6 +5,7 @@ from flask import flash
 from flask_dropzone import Dropzone
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
+from flask_cors import CORS
 import random
 import MySQLdb
 import os
@@ -16,6 +17,7 @@ import extractNotes
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.urandom(24)
 app.register_blueprint(views, url_prefix="/")
 app.config.update(

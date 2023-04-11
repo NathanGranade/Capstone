@@ -8,10 +8,7 @@ body {
   background: linear-gradient(to right, #373b44, #4286f4);
   color:white;
   font-family: 'Roboto', sans-serif;
- 
-  
   max-height: 100%;
- 
 }
 
 .navbar {
@@ -73,7 +70,6 @@ a:visited {
   height: 80%;
   padding: 1em;
   width: 30%;
-  overflow: scroll;
 }
 
 textarea {
@@ -148,7 +144,6 @@ textarea {
   cursor: auto;
 }
 
-
 .register-form {
   box-shadow: 3px 3px #cfe6ee;
     background: linear-gradient(to bottom, #2980b9, #6dd5fa);
@@ -166,20 +161,18 @@ textarea {
     height: 20%;
     width: 20%;
 }
+
 .tab {
   text-align: justify;
   white-space: pre-line;
   overflow-y:auto;
-  
-  
+
   display: flex;
   line-height: .8;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 
- 
-  
   font-family: monospace;
   font-size: 1.5em;
   color: white;
@@ -187,6 +180,4 @@ textarea {
   -moz-box-sizing: padding-box;
   -webkit-box-sizing: padding-box;
   padding-top: 40px;
- 
-
 }
