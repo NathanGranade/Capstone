@@ -1,0 +1,31 @@
+version: "3.11"
+
+services:
+  backend:
+    build:
+      context: ./clabtest/react/server
+      dockerfile: Dockerfile
+    volumes:
+      - "./clabtest/react/server:/usr/src/clab-app"
+    ports:
+      - 5004:5000
+    environment:
+      - FLASK_ENV=development
+      - APP_SETTINGS=app.config.DevelopmentConfig
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_dev
+      - SECRET_KEY=secret
+
+  frontend:
+    build:
+      context: ./clabtest/react
+      dockerfile: Dockerfile
+    volumes:
+      - "./clabtest/react:/usr/src/clab-app"
+      - "/usr/src/clab-app/node_modules"
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_BACKEND_SERVICE_URL=http://localhost:5004
+    depends_on:
+      - backend
