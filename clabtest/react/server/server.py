@@ -193,13 +193,17 @@ def register():
             return ("Please input a valid username. A valid username is at least 8 characters and contains no special characters.")
         idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
-        mysql.connection.commit()
-        cursor.close()
-    if email and username and password:
-        return ("User registered")
-    else:
-        return ("Please fill out all forms.")
+        cursor.execute("select * from Users where (Username = '%s') OR (Email = '%s')" % (username, email))
+        if cursor.rowcount == 0:
+            if email and username and password:
+                cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
+                mysql.connection.commit()
+                cursor.close()
+                return ("User registered")
+            else:
+                return ("Please fill out all forms.")
+        else:
+            return ("Username or email already exists!")
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
