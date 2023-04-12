@@ -109,7 +109,7 @@ class Drop extends React.Component {
             </div>
             <br />
             <div>
-              <button className="button-19">Upload</button>
+              <button className="button-19" id="Upload">Upload</button>
             </div>
           </form>
           {/* Display fetched data */}
