@@ -6,7 +6,7 @@ function Home (){
     <body>
         <div className="title-body">
         <a href="/" id ="title"><h1 className="title">CLAB🎵</h1></a>
-            <a href="drop"><button className="button-19">Get Started</button></a>
+            <a href="drop"><button className="button-19" id="Start">Get Started</button></a>
             <p className="title-text">Create Sheet Music with Ease</p>
         </div>
         <div className="title-body" id="about">
