@@ -4,7 +4,7 @@ function Login () {
     return  <div className="login-form">
     <h1>Log In</h1>
 <form action="/login" method = "POST">
-    <p>Username <input id="username" type = "text" name = "username" placeholder="email or username"/></p>
+    <p>Username <input id="username" type = "text" name = "username" placeholder="username"/></p>
     <p>Password <input id="password" type = "password" name = "password" placeholder="password"/></p>
 <p><input className="button-19" id="submit" type = "submit" value = "Log In" /></p>
 </form>
