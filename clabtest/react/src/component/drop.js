@@ -47,6 +47,10 @@ class Drop extends React.Component {
     const pdfContent = fetchedData.tab;
     const pdf = new jsPDF();
     const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+  
+    // Set font to monospace (courier)
+    pdf.setFont('courier');
   
     // Add title and center it
     pdf.setFontSize(14);
@@ -58,18 +62,35 @@ class Drop extends React.Component {
     pdf.setFontSize(10);
     const scores = pdfContent.split('\n\n');
     let yPosition = 30;
+    let xPosition = 10;
+    let column = 0;
   
     scores.forEach((score) => {
       const scoreLines = score.split('\n');
-      const scoreHeight = 7; // Adjusted height calculation
+      const maxLineWidth = Math.max(...scoreLines.map(line => pdf.getStringUnitWidth(line) * pdf.getFontSize() / pdf.internal.scaleFactor));
+      const scoreWidth = maxLineWidth;
   
-      if (yPosition + scoreHeight > pdf.internal.pageSize.getHeight() - 10) {
+      if (column === 1 && xPosition + scoreWidth > pageWidth - 10) {
+        column = 0;
+        yPosition += 30;
+        xPosition = 10;
+      }
+  
+      if (yPosition + 30 > pageHeight - 10) {
         pdf.addPage();
         yPosition = 30; // Reset the yPosition for the new page
       }
   
-      pdf.text(score, 10, yPosition);
-      yPosition += 30;
+      pdf.text(score, xPosition, yPosition);
+  
+      if (column === 0 && xPosition + scoreWidth <= pageWidth / 2) {
+        column += 1;
+        xPosition = pageWidth / 2;
+      } else {
+        column = 0;
+        yPosition += 30;
+        xPosition = 10;
+      }
     });
   
     pdf.save(`${fileName}.pdf`);

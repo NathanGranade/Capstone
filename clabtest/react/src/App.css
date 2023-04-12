@@ -1,13 +1,21 @@
+:root {
+  --main-color: #1899D6;
+  --hover-color: #1CB0F6;
+  --font-family-main: 'Roboto', sans-serif;
+  --font-family-title: 'Oswald', sans-serif;
+  --font-size-big: 1.5em;
+}
+
 * {
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
   scroll-behavior: smooth;
 }
 
 body {
   background: linear-gradient(to right, #373b44, #4286f4);
-  color:white;
-  font-family: 'Roboto', sans-serif;
+  color: white;
+  font-family: var(--font-family-main);
   max-height: 100%;
 }
 
@@ -16,16 +24,17 @@ body {
   text-align: center;
 }
 
-.nav-list{
-  font-size: 1.5em;
+.nav-list {
+  font-size: var(--font-size-big);
   list-style: none;
 }
+
 .nav-list li {
   display: inline;
   padding: 2em;
-}  
+}
 
-a:link {
+a {
   color: white;
   text-decoration: none;
 }
@@ -39,21 +48,23 @@ a:visited {
   color: white;
 }
 
-#title{
+#title {
   text-decoration: none;
 }
+
 .title {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-family-title);
   font-size: 12em;
   text-shadow: 5px 5px black;
   text-decoration: none;
 }
 
-.title-text{
+.title-text {
   padding-top: 2%;
   font-size: 2em;
   font-style: italic;
 }
+
 .title-body {
   display: flex;
   justify-content: center;
@@ -62,10 +73,12 @@ a:visited {
   width: 100%;
   height: 90vh;
 }
+
 #about {
-  flex-direction: row; 
-  font-size: 1.5em;
+  flex-direction: row;
+  font-size: var(--font-size-big);
 }
+
 .about-section {
   height: 80%;
   padding: 1em;
@@ -83,21 +96,21 @@ textarea {
   height: 8vh;
 }
 
-
 .button-19 {
+  /* grouped shared styles */
   appearance: button;
-  background-color: #1899D6;
+  background-color: var(--main-color);
   border: solid transparent;
   border-radius: 16px;
   border-width: 0 0 4px;
   box-sizing: border-box;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   display: inline-block;
-  font-family: din-round,sans-serif;
+  font-family: din-round, sans-serif;
   font-size: 100%;
   font-weight: 700;
-  letter-spacing: .8px;
+  letter-spacing: 0.8px;
   line-height: 20px;
   margin: 0;
   outline: none;
@@ -107,7 +120,7 @@ textarea {
   text-transform: uppercase;
   touch-action: manipulation;
   transform: translateZ(0);
-  transition: filter .2s;
+  transition: filter 0.2s;
   user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
@@ -117,7 +130,7 @@ textarea {
 
 .button-19:after {
   background-clip: padding-box;
-  background-color: #1CB0F6;
+  background-color: var(--hover-color);
   border: solid transparent;
   border-radius: 16px;
   border-width: 0 0 4px;
@@ -146,29 +159,29 @@ textarea {
 
 .register-form {
   box-shadow: 3px 3px #cfe6ee;
-    background: linear-gradient(to bottom, #2980b9, #6dd5fa);
-    border-radius: 2em;
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    display: flex;
-    justify-content: center;
-    padding: 1em;
-    align-items: center;
-    text-align: center;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    height: 20%;
-    width: 20%;
+  background: linear-gradient(to bottom, #2980b9, #6dd5fa);
+  border-radius: 2em;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 1em;
+  align-items: center;
+  text-align: center;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  height: 20%;
+  width: 20%;
 }
 
 .tab {
   text-align: justify;
   white-space: pre-line;
-  overflow-y:auto;
+  overflow-y: auto;
 
   display: flex;
-  line-height: .8;
+  line-height: 0.8;
   justify-content: center;
   align-items: center;
   flex-direction: column;
