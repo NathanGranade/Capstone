@@ -24,6 +24,7 @@ class Drop extends React.Component {
 
   handleUpload(event) {
     event.preventDefault();
+    
 
     const data = new FormData();
     const uploadedFile = this.uploadInput.files[0];
@@ -39,11 +40,13 @@ class Drop extends React.Component {
         this.setState({ fetchedData: body }); // set the state with the data from /upload
       });
     });
+    document.getElementById("pdfTitle").value = ""
+    document.getElementById("SavePDF").disabled = false
   }
 
   generatePDF() {
     const { fetchedData, fileName, pdfTitle } = this.state;
-
+    document.getElementById("SavePDF").disabled = true
     const pdfContent = fetchedData.tab;
     const pdf = new jsPDF();
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -82,7 +85,7 @@ class Drop extends React.Component {
       <body>
         <div id="upload">
           <h1>Choose a file to upload</h1>
-          <form onSubmit={this.handleUpload}>
+          <form id="choose file" onSubmit={this.handleUpload}>
             <div>
               <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
             </div>
@@ -104,7 +107,7 @@ class Drop extends React.Component {
                 onChange={this.handleTitleChange}
               />
               {/* Save as PDF button */}
-              <button onClick={() => this.generatePDF()}>Save as PDF</button>
+              <button id="SavePDF" onClick={() => this.generatePDF()}>Save as PDF</button>
                 {/* Display JSON data */}
                 <p>
                 {fetchedData.tab}
