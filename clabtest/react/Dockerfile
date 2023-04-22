@@ -1,13 +1,17 @@
-FROM node:17-alpine
+# pull official base image
+FROM node:18-alpine
 
-WORKDIR /app
+# set working directory
+WORKDIR /usr/src/clab-app
 
+# add `/usr/src/app/node_modules/.bin` to $PATH
+ENV PATH /usr/src/clab-app/node_modules/.bin:$PATH
+
+# install and cache app dependencies
 COPY package.json .
+COPY package-lock.json .
+RUN npm ci
+RUN npm install react-scripts@5.0.1 -g --silent
 
-RUN npm install
-
-COPY . .
-
-EXPOSE 3000
-
-CMD ["npm", "start"] 
+# start app
+CMD ["npm", "start"]
