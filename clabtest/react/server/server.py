@@ -10,6 +10,10 @@ import random
 import MySQLdb
 import os
 import time
+from flask import Flask, request, jsonify
+from flask_mail import Mail, Message
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 import extractNotes
@@ -27,11 +31,18 @@ app.config.update(
 )
 
 dropzone = Dropzone(app)
-    
+CORS(app)
 app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
 app.config['MYSQL_USER'] = "sql9591604"
 app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
 app.config['MYSQL_DB'] = "sql9591604"
+os.environ['SENDGRID_API_KEY'] = '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'
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 mysql = MySQL(app)
 
@@ -83,8 +94,34 @@ def validateEmail(email):
         return 1
     else: 
         return 0
-    
-    
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    sender_email = request.get_json()['realEmail']
+    reply_email = request.get_json()['email']
+    sender_name = request.get_json()['name']
+    message = request.get_json()['message']
+    recipient_email = 'clabbusiness2023@gmail.com'
+
+    # Create SendGrid message object
+    message = Mail(
+        from_email=(sender_email, sender_name),
+        to_emails=recipient_email,
+        subject='New message from your website! from {}'.format(reply_email),
+        plain_text_content="{} said: ".format(reply_email) + message)
+
+    try:
+    # Initialize SendGrid client with API key
+        sg = SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+
+        # Send message via SendGrid API
+        response = sg.send(message)
+
+        # Return success message
+        return 'Message sent successfully!'
+    except Exception as e:
+        # Return error message
+        return 'An error occurred while sending the message: {}'.format(str(e))
+
 
 @app.route('/form')
 def form():
