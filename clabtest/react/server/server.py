@@ -32,10 +32,10 @@ app.config.update(
 
 dropzone = Dropzone(app)
 CORS(app)
-app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
-app.config['MYSQL_USER'] = "sql9591604"
-app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
-app.config['MYSQL_DB'] = "sql9591604"
+app.config['MYSQL_HOST'] = config.sql_host
+app.config['MYSQL_USER'] = config.sql_user
+app.config['MYSQL_PASSWORD'] = config.sql_password
+app.config['MYSQL_DB'] = config.sql_user
 os.environ['SENDGRID_API_KEY'] = config.api_key
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
