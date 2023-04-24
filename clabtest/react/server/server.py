@@ -14,7 +14,7 @@ from flask import Flask, request, jsonify
 from flask_mail import Mail, Message
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
+import config
 
 import extractNotes
 
@@ -36,7 +36,7 @@ app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
 app.config['MYSQL_USER'] = "sql9591604"
 app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
 app.config['MYSQL_DB'] = "sql9591604"
-os.environ['SENDGRID_API_KEY'] = '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'
+os.environ['SENDGRID_API_KEY'] = config.api_key
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
