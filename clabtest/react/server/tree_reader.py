@@ -47,13 +47,12 @@ def read_nodes(file_name: str):
             )
     file_contents = get_file_contents(file_name)
 
-    nodes = []
-    root = parse_file_name()
     for line in file_contents:
         # level is needed to determine whether
         # or not a node should be added to the nodes list
         # or made a child of the previous node.
         level = line.count("\t")
+        level_difference = (previous_level - level) + 1
         
         # get information to construct the node
         split_line = line.split()
@@ -62,13 +61,16 @@ def read_nodes(file_name: str):
         fret_number = int(split_line[2])
         
         # case: level 0 node (direct child of root)
+        if level_difference != 0:
+            pass
+        # if level is 0, it goes directly as a child of the root
         if level == 0:
-            nodes.append(
-                    Tree.Node(
-                        note_name,
-                        FretboardPosition(string_number, fret_number),
-                        root_node)
-                    )
+            root_node.insert_child(
+                            Tree.Node(note_name,
+                                    FretboardPosition(string_number, fret_number),
+                                    root_node)
+                                    )
+            
         # if not a level 0 node, then it must be the child of the last node added
         else:
             raise NotImplementedError("Logic needs to be worked out for adding nested children")

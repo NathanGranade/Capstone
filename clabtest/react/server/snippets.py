@@ -32,6 +32,16 @@ class Tree:
             if self.has_child(child):
                 return
             self.children.append(child)
+        
+        def __getitem__(self, item):
+            split_item = item.split()
+            value = split_item[0]
+            fretboard_value = split_item[1]
+            for child in self.children:
+                if child.value == value and child.fretboard_value == fretboard_value:
+                    return(child)
+
+
 
 E2_Tree = Tree(Node("E2", FretboardPosition(6, 0), None, []))
 E3_Tree = Tree(Node("E3", FretboardPosition(5, 7), None, []))

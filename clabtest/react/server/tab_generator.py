@@ -1,4 +1,6 @@
 import copy
+from vector import Vector
+
 STRINGS_FOR_TUNINGS = {
     "E standard"  : {6 : "E",  5 : "A",  4 : "D",  3 : "G",  2 : "B",  1 : "e"},
     "Eb standard" : {6 : "Eb", 5 : "Ab", 4 : "Db", 3 : "Gb", 2 : "Bb", 1 : "eb"},
@@ -412,7 +414,19 @@ def get_open_option(note: str):
 def insert_into_lookup_table(previous, options, choice):
     LOOKUP_TABLE[str(previous)] = {str(options) : choice}
 
-def get_best_next_position(previous, options, track, tuning):
+def get_best_next_position(previous, options, track, tuning, song = [], song_index = 0):
+    """
+    Greedy method for determining where to place your fingers on the fretboard given the fretboard positions corresponding to a note to be played.
+
+    Keyword arguments
+    previous   -- FretboardPosition instance corresponding to the last spot played on the fretboard.
+    options    -- a list of FretboardPosition instances. Each instance corresponds to different ways to play a target note.
+    track      -- the entire set of previously determined positions to play (outputs of this method)
+    tuning     -- a string representing the tuning the guitar is in.
+    song       -- the entire set of notes to be played
+    song_index -- the index within the song argument to which the current note to be placed on the 
+                  fretboard corresponds to (note corresponding to options argument)
+    """
     # use lookup table to avoid unnecessary calculation
     if str(previous) in LOOKUP_TABLE.keys():
         if str(options) in LOOKUP_TABLE[str(previous)]:
@@ -506,9 +520,110 @@ def get_best_next_position(previous, options, track, tuning):
     # add to lookup table
     insert_into_lookup_table(previous, options, nearest)
     return(nearest)
-            
+
+# implementation using vectors for distances
+def get_best_next_position_vector(previous, options, track, tuning):
+    # use lookup table to avoid unnecessary calculation
+    if str(previous) in LOOKUP_TABLE.keys():
+        if str(options) in LOOKUP_TABLE[str(previous)]:
+            #print(f"used lookup table for\n\tprevious = {str(previous)}\n\toptions = {str([str(option) for option in options])}")
+            return(LOOKUP_TABLE[str(previous)][str(options)])
+    
+    lateral_distances = []
+    vertical_distances = []
+    vectors = []
+
+    # remove all 7th and 8th string positionings when
+    # playing in a 6-string tuning
+    if not tuning in EXTENDED_TUNINGS:
+        options = [option 
+                   for option in options 
+                   if not option.string in [7, 8]]
+    
+    # get the lateral and vertical distance of every position on the fretboard that plays the note that comes after the "previous" argument
+    for option in options:
+        lateral_distance = lateral_fretboard_distance(previous, option)
+        vertical_distance = get_vertical_distance(previous, option)
+        vectors.append(Vector(lateral_distance, vertical_distance))
+        #lateral_distances.append(lateral_distance)
+        #vertical_distances.append(vertical_distance)
+    
+    corresponding_note = get_corresponding_note(options[0]) # use [0] because it does not matter as they are all the same note
+    open_option = get_open_option(str(corresponding_note))
+    same_string_options = get_same_string_options(str(corresponding_note), previous.string)
+        
+    # if there is only one option, return that option
+    if len(options) == 1:
+        # add to lookup table
+        insert_into_lookup_table(previous, options, options[0])
+        return(options[0])
+    
+    # if the note can be played open (0th fret), on the same string 
+    # as the previous note, play openly.
+    if open_option != None:
+        if previous.string == open_option.string:
+            # add to lookup table
+            insert_into_lookup_table(previous, options, open_option)   
+            return(open_option)
+    
+    for option in same_string_options:
+        # if you can play the note on the same string as the
+        # previous note and the previous note was played openly
+        # then play it on the same string, regardless of distance
+        if previous.fret == 0:
+            # add to lookup table
+            insert_into_lookup_table(previous, options, option)
+            return(option)
+        
+        # if previous note was not played on open string
+        # then still prefer the same string, so long as it is
+        # not too far away (5+ frets away)
+        if lateral_fretboard_distance(previous, option) < 5:
+            # add to lookup table
+            insert_into_lookup_table(previous, options, option)
+            return(option)
+    
+    # if the previously played note was played on an open string,
+    # then you can be more liberal with the positioning of the next note
+    # as your hand comes off the fretboard entirely.
+    # The rule here is to minimize vertical distance (string skipping)
+    # unless, you can skip 1 extra string to play the same note, and minimize horizontal distance
+    if previous.fret == 0:
+        previous_previous_note = track[len(track)-2]
+        sorted_vertical_distances = vertical_distances.sort()
+        minimum_vertical_distance = min(vertical_distances)
+        minimum_string_skipping_position_index = vertical_distances.index(minimum_vertical_distance)
+        minimum_string_skipping_position = options[minimum_string_skipping_position_index]
+        # try to minimize horizontal distance by considering
+        #   1. the note played before the open note
+        #   2. if you do less horizontal movement relative to that
+        #      note that came before the open note, by skipping 1 extra string
+        if lateral_fretboard_distance(minimum_string_skipping_position, previous_previous_note) > 2:
+            try:
+                second_minimum_string_skipping_position_index = vertical_distances.index(sorted_vertical_distances[1])
+                second_minimum_string_skipping_position = options[second_minimum_string_skipping_position_index]
+                # add to lookup table
+                insert_into_lookup_table(previous, options, second_minimum_string_skipping_position)
+                return(second_minimum_string_skipping_position)
+            except:    
+                pass
+        # otherwise, return the position that minimizes string skipping
+        # add to lookup table
+        insert_into_lookup_table(previous, options, minimum_string_skipping_position)
+        return(minimum_string_skipping_position)
+    
+    # if none of the other heuristics apply, then
+    # return the smallest distance
+    smallest_distance = min(lateral_distances)
+    smallest_distance_index = lateral_distances.index(smallest_distance)
+    nearest = options[smallest_distance_index]
+    # add to lookup table
+    insert_into_lookup_table(previous, options, nearest)
+    return(nearest)
+           
 # prototype new version that takes into account the NEXT note as well
 # before assigning the current note.
+
 def get_best_next_position_neo(previous, subsequent, options): 
     """
     Returns an instance of the FretboardPosition class corresponding to the best way to play a note, given the context of what was played before and what will be played next.
@@ -830,7 +945,7 @@ def generate_tab_dictionary(notes, tuning):
         note = notes[x]
         options = TAB_MAP[str(note)]
         
-        easiest = get_best_next_position(previous, options, positions, tuning)
+        easiest = get_best_next_position(previous, options, positions, tuning, notes, x)
         positions.append(easiest)
         previous = easiest
     
