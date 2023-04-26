@@ -3,11 +3,16 @@
 # for example E2-6-0 is the Decision Tree for:
 #   Note E2 played on the 6th string, on the open fret
 def parse_file_name(file_name: str) -> dict:
-    split_file_name = file_name.split(".tree")
-    split_file_name = split_file_name[0].split("-")
-    note_name = split_file_name[0]
-    string_number = split_file_name[1]
-    fret_number = split_file_name[2]
+    split_file_name = file_name.split("/")
+    file_name_without_path = split_file_name[-1]
+    
+    file_name_without_path_or_extension = file_name_without_path.split(".tree")
+    
+    plain_file_name = file_name_without_path_or_extension[0].split("-")
+    
+    note_name = plain_file_name[0]
+    string_number = plain_file_name[1]
+    fret_number = plain_file_name[2]
     return(
         {
             "note"   : note_name,
@@ -106,6 +111,8 @@ class TreeNode:
                             elements["fret"]
                             )
 
+            print(f"current node: {str(node)}")
+            print(f"parent for current node: {str(tail(tree_dictionary[level - 1]))}")
             # its parent must be the last added element for the previous level
             tail(tree_dictionary[level - 1]).add_child(node)
             
@@ -135,6 +142,13 @@ if __name__ == "__main__":
     print("F4 1 1" in e3)
     """
     print("Begin tree read ------------------------")
-    root = TreeNode.create_from_file("E2-6-0.tree")
-    root.print_tree()
-    print([str(node) for node in root.traverse()])
+    root = TreeNode.create_from_file("trees/E2-6-0.tree")
+    #root.print_tree()
+    traversal = root.traverse()
+    print([str(node) for node in traversal])
+    print(len(traversal))
+    for node in traversal:
+        print(str(node))
+        for child in node.children:
+            print(f"\t{str(child)}")
+        print()

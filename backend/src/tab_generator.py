@@ -1,5 +1,6 @@
 import copy
 from vector import Vector
+from GeneralTree import TreeNode
 
 STRINGS_FOR_TUNINGS = {
     "E standard"  : {6 : "E",  5 : "A",  4 : "D",  3 : "G",  2 : "B",  1 : "e"},
@@ -410,6 +411,9 @@ def get_open_option(note: str):
     
     # otherwise, return None
     return(None)
+
+def consult_tree(notes):
+    
 
 def insert_into_lookup_table(previous, options, choice):
     LOOKUP_TABLE[str(previous)] = {str(options) : choice}
