@@ -2,14 +2,20 @@ version: "3.11"
 
 services:
   frontend:
-    image: frontend:latest
-    environment:
-      PORT: 3000
-      PROXY_API: http://backend:8000/
+    build: frontend
     ports:
       - 3000:3000
+    environment:
+    volumes:
+      - .\frontend\src:/app/src:ro
 
   backend:
-    image: backend:latest
+    build: backend
+    environment:
+      PORT: 8000
+      HOST: 0.0.0.0
     ports:
       - 8000:8000
+    volumes:
+      - .\backend\src:/app/src:ro
+      - .\backend\uploads:/app/uploads

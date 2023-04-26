@@ -1,0 +1,14 @@
+FROM python:3.11
+
+# The /app directory should act as the main application directory
+WORKDIR /app
+
+RUN mkdir RawNotes
+RUN mkdir tuning-outputs
+
+# add and install requirements
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+CMD ["python", "/app/src/server.py"]

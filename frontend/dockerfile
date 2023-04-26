@@ -1,0 +1,14 @@
+# pull official base image
+FROM node:alpine
+
+# The /app directory should act as the main application directory
+WORKDIR /app
+
+# Copy the app package file
+COPY package.json ./
+
+# Install node packages
+RUN npm install
+
+# start app
+CMD ["npm", "run", "dev"]
