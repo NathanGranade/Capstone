@@ -5,9 +5,8 @@ services:
     build: frontend
     ports:
       - 3000:3000
-    environment:
     volumes:
-      - .\frontend\src:/app/src:ro
+      - ./frontend/src:/app/src:ro
 
   backend:
     build: backend
@@ -17,5 +16,5 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - .\backend\src:/app/src:ro
-      - .\backend\uploads:/app/uploads
+      - ./backend/src:/app/src:ro
+      - ./backend/uploads:/app/uploads

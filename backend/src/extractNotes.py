@@ -28,7 +28,7 @@ def midiConvert(AUDIO_FILE):
         for note in instrument.notes:
             l.append(note.pitch)
     #print(l)
-    filepath = os.path.join('RawNotes', 'RawNotes.txt')
+    filepath = os.path.join('../RawNotes', 'RawNotes.txt')
     if not os.path.exists('RawNotes'):
         os.makedirs('RawNotes')
     file = open(filepath, "+w")
