@@ -1,23 +1,24 @@
 import React from 'react';
 import jsPDF from 'jspdf';
-
-
 class Drop extends React.Component {
   constructor(props) {
     super(props);
+    this.fileInput = React.createRef();
 
     this.state = {
       tab: '',
       fetchedData: null, // initialize the fetchedData
       fileName: '',
       pdfTitle: '',
+      options: [], selectedValue: '' 
     };
 
     this.handleUpload = this.handleUpload.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
-    
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
-
+  
   handleTitleChange(event) {
     this.setState({ pdfTitle: event.target.value });
   }
@@ -27,7 +28,7 @@ class Drop extends React.Component {
     
 
     const data = new FormData();
-    const uploadedFile = this.uploadInput.files[0];
+    const uploadedFile = this.fileInput.current.files[0];
     data.append('file', uploadedFile);
     this.setState({ fileName: uploadedFile.name.split('.')[0] }); // set the file name
 
@@ -42,8 +43,26 @@ class Drop extends React.Component {
     });
     document.getElementById("pdfTitle").value = ""
     document.getElementById("SavePDF").disabled = false
+    
   }
+  handleClick = async () => {
+    const response = await fetch('/getTuning');
+    const tuningList = await response.json();
+    const dropdown = document.getElementById('tuningDropdown');
+    dropdown.innerHTML = '';
+    console.log(tuningList)
+    tuningList.forEach((tuning) => {
+      const option = document.createElement('option');
+      option.value = tuning;
+      option.text = tuning;
+      dropdown.appendChild(option);
+    });
+  };
 
+  handleSelectChange(event) {
+    
+    this.setState({ selectedValue: event.target.value });
+  }
   generatePDF() {
     const { fetchedData, fileName, pdfTitle } = this.state;
     document.getElementById("SavePDF").disabled = true
@@ -97,18 +116,39 @@ class Drop extends React.Component {
     });
   
     pdf.save(`${fileName}.pdf`);
+    
   }
+  handleTuningChange = (event) => {
+    event.preventDefault();
+    const data = new FormData();
+    const uploadedFile = this.fileInput.current.files[0];
+    console.log(uploadedFile.name)
+    //data.append('file', uploadedFile);
+    //this.setState({ fileName: uploadedFile.name.split('.')[0] }); // set the file name
+    const selectedTuning = this.state.selectedValue;
+    fetch(`/changeTuning/${selectedTuning}/${uploadedFile.name}`, {
+      method: 'POST',
+      body: data,
+    }).then((response) => {
+      response.json().then((body) => {
+        console.log(body);
+        this.setState({ fetchedData: body }); // set the state with the data from /upload
+      });
+    });
+    
+  };
+
 
   render() {
     const { fetchedData } = this.state;
-  
     return (
       <body>
+        
         <div id="upload">
           <h1>Choose a file to upload</h1>
           <form id="choose file" onSubmit={this.handleUpload}>
             <div>
-              <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
+              <input ref={this.fileInput}  type="file" onChange={this.handleFileInputChange} />
             </div>
             <br />
             <div>
@@ -135,6 +175,16 @@ class Drop extends React.Component {
                 </p>
             </div>
           ) : null}
+          <div>
+          
+          <select id='tuningDropdown' value={this.state.selectedValue} onChange={this.handleSelectChange}>
+          {this.options}
+          </select>
+          <p>Selected tuning: {this.state.selectedValue}</p>
+          <button id="generateTuningsBtn" onClick={this.handleClick}>Generate Tunings</button>
+          <button id="changeTuning" onClick={this.handleTuningChange}>Submit</button>
+      </div>
+
         </div>
       </body>
     );

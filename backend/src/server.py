@@ -10,13 +10,15 @@ import random
 import MySQLdb
 import os
 import time
-
+from flask import Flask, request, jsonify
+from flask_mail import Mail, Message
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import config
 
 import extractNotes
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-port_number = os.environ.get('PORT')
-host_ip = os.environ.get('HOST')
 
 app = Flask(__name__)
 CORS(app)
@@ -29,18 +31,25 @@ app.config.update(
 )
 
 dropzone = Dropzone(app)
-    
-app.config['MYSQL_HOST'] = "sql9.freemysqlhosting.net"
-app.config['MYSQL_USER'] = "sql9591604"
-app.config['MYSQL_PASSWORD'] = "VGFGb1Ka2c"
-app.config['MYSQL_DB'] = "sql9591604"
+CORS(app)
+app.config['MYSQL_HOST'] = config.sql_host
+app.config['MYSQL_USER'] = config.sql_user
+app.config['MYSQL_PASSWORD'] = config.sql_password
+app.config['MYSQL_DB'] = config.sql_user
+os.environ['SENDGRID_API_KEY'] = config.api_key
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 mysql = MySQL(app)
 
 Flag = False
 filepath = os.path.join('../RawNotes', 'RawNotes-tab.txt')
 if os.path.exists('../RawNotes'):
-    f = open(filepath, "r+")
+    f = open(filepath, "r")
     f.truncate()
 def validatepw(password):
       a=0
@@ -85,30 +94,74 @@ def validateEmail(email):
         return 1
     else: 
         return 0
-    
-    
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    sender_email = request.get_json()['realEmail']
+    reply_email = request.get_json()['email']
+    sender_name = request.get_json()['name']
+    message = request.get_json()['message']
+    recipient_email = 'clabbusiness2023@gmail.com'
+
+    # Create SendGrid message object
+    message = Mail(
+        from_email=(sender_email, sender_name),
+        to_emails=recipient_email,
+        subject='New message from your website! from {}'.format(reply_email),
+        plain_text_content="{} said: ".format(reply_email) + message)
+
+    try:
+    # Initialize SendGrid client with API key
+        sg = SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+
+        # Send message via SendGrid API
+        response = sg.send(message)
+
+        # Return success message
+        return 'Message sent successfully!'
+    except Exception as e:
+        # Return error message
+        return 'An error occurred while sending the message: {}'.format(str(e))
+
 
 @app.route('/form')
 def form():
     return render_template('form.html')
 
+@app.route('/getTuning', methods=['POST', 'GET'])
+def getTuning():
+    filepath = os.path.join('Rawnotes', 'RawNotes.txt')
+    if not os.path.exists('RawNotes'):
+        return None
+    tunings = extractNotes.getTune(filepath)
+    print(type(tunings))
+    return tunings
+
+@app.route('/changeTuning/<selected_tuning>/<filename>', methods=['POST'])
+def changeTuning(selected_tuning, filename):
+    if request.method == 'POST':
+        notes = extractNotes.midiConvert(filename)
+        Tscript = extractNotes.changeTuning(notes, selected_tuning)
+        session["var"] = Tscript
+        filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+        if not os.path.exists('RawNotes'):
+            os.makedirs('RawNotes')
+        with open(filepath, "r") as f:
+            songnotes = f.read()
+        return {"tab": songnotes}
+
 @app.route('/upload', methods = ['POST', 'GET'])
 def upload():
     global Flag
-    filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
-    if os.path.exists('RawNotes'):
-        f = open(filepath, "r+")
-        f.truncate()
-
     if request.method == 'POST':
         
         print("FLAg IS {} IN UPLOAD".format(Flag))
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         notes = extractNotes.midiConvert(f.filename)
+        print("These are the notes: " + notes)
         Tscript = extractNotes.run(notes)
         session["var"] = Tscript
-        filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+        filepath = os .path.join('RawNotes', 'RawNotes-tab.txt')
         if not os.path.exists('RawNotes'):
             os.makedirs('RawNotes')
         f = open(filepath, "r")
@@ -224,4 +277,4 @@ def login():
         return ""
 
 if __name__ == '__main__':
-    app.run(host=host_ip, debug = True, port = port_number)
+    app.run(debug = True, port = 8000)

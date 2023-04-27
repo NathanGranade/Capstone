@@ -28,7 +28,7 @@ def midiConvert(AUDIO_FILE):
         for note in instrument.notes:
             l.append(note.pitch)
     #print(l)
-    filepath = os.path.join('../RawNotes', 'RawNotes.txt')
+    filepath = os.path.join('RawNotes', 'RawNotes.txt')
     if not os.path.exists('RawNotes'):
         os.makedirs('RawNotes')
     file = open(filepath, "+w")
@@ -44,5 +44,32 @@ def midiConvert(AUDIO_FILE):
 def run(filepath):
     print(filepath)
     return os.system("python tab_generator_interface.py generate_tab {}".format(filepath) )
+
+def getTune(filepath):
+    print(filepath)
+    os.system("python tab_generator_interface.py get_tunings {}".format(filepath))
+    fp = filepath.split('\\')
+    filepath2 = fp[-1]
+    path = os.path.join('tuning-outputs','tunings_for_' + filepath2 )
+    file = open(path, "r")
+    tunings = []
+    for i in file:
+        tunings.append(i)
+    file.close()
+    tunings = [tuning.replace('\n','') for tuning in tunings]
+    return tunings
+def changeTuning(filepath,tuning):
+    
+    print(tuning)
+    #s = ("python tab_generator_interface.py generate_tab {} tuning='{}'".format(filepath, tuning))
+    
+    #print(s)
+    return os.system(f"powershell.exe python tab_generator_interface.py generate_tab {filepath} tuning='{tuning}'")
+    
+    
+#s = "Drop D"
+#print(changeTuning(midiConvert('lamb.mid'),'Drop D'))
+
+
 
         

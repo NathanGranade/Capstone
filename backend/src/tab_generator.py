@@ -413,7 +413,7 @@ def get_open_option(note: str):
     return(None)
 
 def consult_tree(notes):
-    
+    pass
 
 def insert_into_lookup_table(previous, options, choice):
     LOOKUP_TABLE[str(previous)] = {str(options) : choice}
