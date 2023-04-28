@@ -1,7 +1,7 @@
 from flask import Flask
 from views import views
 from flask import Flask, flash, render_template, request, redirect, url_for, session
-from flask import flash
+from flask import jsonify
 from flask_dropzone import Dropzone
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
@@ -47,9 +47,9 @@ mail = Mail(app)
 mysql = MySQL(app)
 
 Flag = False
-filepath = os.path.join('../RawNotes', 'RawNotes-tab.txt')
-if os.path.exists('../RawNotes'):
-    f = open(filepath, "r")
+filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+if os.path.exists('RawNotes'):
+    f = open(filepath, "r+")
     f.truncate()
 def validatepw(password):
       a=0
@@ -122,46 +122,32 @@ def send_email():
         # Return error message
         return 'An error occurred while sending the message: {}'.format(str(e))
 
+@app.route('/loggedin')
+def set_loggedin():
+    loggedin = True
+    return jsonify(variable=loggedin)
 
 @app.route('/form')
 def form():
     return render_template('form.html')
 
-@app.route('/getTuning', methods=['POST', 'GET'])
-def getTuning():
-    filepath = os.path.join('Rawnotes', 'RawNotes.txt')
-    if not os.path.exists('RawNotes'):
-        return None
-    tunings = extractNotes.getTune(filepath)
-    print(type(tunings))
-    return tunings
-
-@app.route('/changeTuning/<selected_tuning>/<filename>', methods=['POST'])
-def changeTuning(selected_tuning, filename):
-    if request.method == 'POST':
-        notes = extractNotes.midiConvert(filename)
-        Tscript = extractNotes.changeTuning(notes, selected_tuning)
-        session["var"] = Tscript
-        filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
-        if not os.path.exists('RawNotes'):
-            os.makedirs('RawNotes')
-        with open(filepath, "r") as f:
-            songnotes = f.read()
-        return {"tab": songnotes}
-
 @app.route('/upload', methods = ['POST', 'GET'])
 def upload():
     global Flag
+    filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+    if os.path.exists('RawNotes'):
+        f = open(filepath, "r+")
+        f.truncate()
+
     if request.method == 'POST':
         
         print("FLAg IS {} IN UPLOAD".format(Flag))
         f = request.files.get('file')
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         notes = extractNotes.midiConvert(f.filename)
-        print("These are the notes: " + notes)
         Tscript = extractNotes.run(notes)
         session["var"] = Tscript
-        filepath = os .path.join('RawNotes', 'RawNotes-tab.txt')
+        filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
         if not os.path.exists('RawNotes'):
             os.makedirs('RawNotes')
         f = open(filepath, "r")
@@ -239,13 +225,16 @@ def register():
         password = request.form['password']
         validPW = validatepw(password)
         if validPW == 0:
-            return ("Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters.")
+            flash("Please input a valid password. A valid password uses a number, a special character, a capital letter, and has a length between 8 and 20 characters.")
+            return redirect(url_for('register'))
         validEmail = validateEmail(email)
         if validEmail == 0:
-            return ("Please input a valid email address.")
+            flash("Please input a valid email address.")
+            return redirect(url_for('register'))
         validUser = validateUser(username)
         if validUser == 0:
-            return ("Please input a valid username. A valid username is at least 8 characters and contains no special characters.")
+            flash("Please input a valid username. A valid username is at least 8 characters and contains no special characters.")
+            return redirect(url_for('register'))
         idUser = random.randrange(100)
         cursor = mysql.connection.cursor()
         cursor.execute("select * from Users where (Username = '%s') OR (Email = '%s')" % (username, email))
@@ -254,11 +243,14 @@ def register():
                 cursor.execute(''' INSERT INTO Users (Email,Username,Password,idUser) VALUES(%s,%s,%s,%s)''',(email,username,password,idUser))
                 mysql.connection.commit()
                 cursor.close()
-                return ("User registered")
+                flash("User registered")
+                return redirect(url_for('display'))
             else:
-                return ("Please fill out all forms.")
+                flash("Please fill out all forms.")
+                return redirect(url_for('register'))
         else:
-            return ("Username or email already exists!")
+            flash("Username or email already exists!")
+            return redirect(url_for('register'))
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -269,12 +261,20 @@ def login():
         ##sql ='SELECT idUser from Users WHERE Username = {0}'.format(loginusername)
         cursor.execute("select * from Users where (Username = '%s') AND (Password = '%s')" % (loginusername, loginpassword))
         if cursor.rowcount == 0:
-            return "User does not exist, try again, or go sign up!" 
-        else:  
+            flash("User does not exist, try again, or go sign up!")
+            return redirect(url_for('login'))
+        elif cursor.rowcount !=0:
            # global loggedin == true
-            return "Logged in!"
+            return redirect(url_for('loggedin'))
     if request.method == 'GET':
         return ""
-
+    
+@app.route('/savedtabs', methods = ['POST', 'GET'])
+def showusertabs():
+    if request.method == 'POST':
+        return "POST"
+    if request.method == 'GET':
+        return "GET"
+    
 if __name__ == '__main__':
     app.run(debug = True, port = 8000)
