@@ -25,7 +25,7 @@ CORS(app)
 app.secret_key = os.urandom(24)
 app.register_blueprint(views, url_prefix="/")
 app.config.update(
-   UPLOADED_PATH = os.path.join(basedir, 'uploads'),
+   UPLOADED_PATH = "/app/uploads",
    DROPZONE_MAX_FILE_SIZE = 1024,
    DROPZONE_TIMEOUT = 5*60*1000
 )
@@ -48,7 +48,7 @@ mysql = MySQL(app)
 
 Flag = False
 filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
-if os.path.exists('RawNotes'):
+if os.path.exists('../RawNotes'):
     f = open(filepath, "r+")
     f.truncate()
 def validatepw(password):
@@ -171,7 +171,7 @@ def display():
     global Flag
     if request.method=='GET':
         time.sleep(0.5)
-        with open('RawNotes/RawNotes-tab.txt', 'r+') as f: 
+        with open('../RawNotes/RawNotes-tab.txt', 'r+') as f: 
             output = f.read()
             f.close()
         #filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
@@ -183,7 +183,7 @@ def display():
 
 @app.route('/wipe', methods = ['GET'])
 def wipe():
-    filepath = os.path.join('RawNotes', 'RawNotes-tab.txt')
+    filepath = os.path.join('../RawNotes', 'RawNotes-tab.txt')
     if os.path.exists('RawNotes'):
         f = open(filepath, "r+")
         f.truncate()
