@@ -178,6 +178,10 @@ class Staff:
 
         if type(other) == Chord:
             self.add_chord(other)
+
+        if type(other) == list:
+            for item in other:
+                self += item
         self.__correct_imbalance()
         return(self)
 class Tab:
