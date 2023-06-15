@@ -79,6 +79,17 @@ class Staff:
             self.string_map[string] = ["-"] * 48
         self.head = 0
 
+    # THIS IS VERTICAL ITER! 
+    # it iterates over ALL columns at once, you so get a dictionary
+    # at each go
+    def __iter__(self):
+        reference_string = self.tuning[::-1][0]
+        for x in range(len(self.string_map[reference_string])):
+            column_snapshot = {string : self.string_map[string][x]
+                               for (string, frets)
+                               in zip(self.string_map.keys(), self.string_map.values())}
+            yield(column_snapshot)
+
     def __str__(self): 
         representation = ""
         for string in self.string_map.keys():
@@ -113,27 +124,36 @@ class Staff:
                     position += 1
             return(self.head + position)
 
+    def __get_frets_only(self, string) -> list:
+        frets_only = [fret for fret in self.string_map[string] if fret != "-"]
+        return(frets_only)
+
     def __correct_imbalance(self) -> None:
-        lengths: dict = {
-                        string : len("".join(self.string_map[string]))
-                        for (string, frets) in zip(self.string_map.keys(), self.string_map.values())
-                        }
-        max_length = max(lengths.values())
-        imbalanced_strings = [string for string in lengths.keys()
-                              if lengths[string] < max_length]
-        
-        if len(imbalanced_strings) == 0:
-            return
-
-        for string in imbalanced_strings: 
-            self.string_map[string].insert(self.head - 1, "-")
-
+        # go over every column of the staff and add trailing hyphens
+        # to the end of every single-digit fret, ONLY when there are
+        # strings that contain a 2-digit fret in said column
+        position = 0
+        for column in self:
+            # list of all frets that have double-digit frets
+            big_fret_strings = [string for string in column.keys()
+                                if len(column[string]) == 2]
+            # modifications are only necessary if the list is not empty
+            if len(big_fret_strings) != 0:
+                for string in column.keys():
+                    # add a trailing hyphen to every string that does not
+                    # have a double-digit fret, to account for the offset
+                    # created when adding a fret with 2 digits
+                    if not string in big_fret_strings:
+                        column[string] = f"{column[string]}-"
+                        self.string_map[string][position] = column[string]
+            position += 1
+ 
     def add_note_instance(self, note, position: int = None) -> None:
         if not note.string in self.tuning:
             return
         
         if position == None:
-           position = self.find_nearest_position(note.string)
+            position = self.find_nearest_position(note.string)
 
         self.string_map[note.string][position] = str(note.fret)
         self.head = self.find_nearest_position(note.string)
@@ -165,11 +185,13 @@ class Staff:
         for string in chord:
             nearest_positions.append(self.find_nearest_position(string))
         nearest_position = max(nearest_positions)
-        
+
+        nearest_positions = []
         for string in chord:
-            fret = chord[string]
-            self.string_map[string][nearest_position] = str(fret) 
-            self.head = self.find_nearest_position(string)
+            fret = str(chord[string])
+            self.string_map[string][nearest_position] = fret
+            nearest_positions.append(self.find_nearest_position(string))
+        self.head = max(nearest_positions)
         self.__correct_imbalance()
 
     def __add__(self, other):
@@ -184,6 +206,8 @@ class Staff:
                 self += item
         self.__correct_imbalance()
         return(self)
+
+            
 class Tab:
     def __init__(self,  title: str = "Untitled",
                         staves = []
